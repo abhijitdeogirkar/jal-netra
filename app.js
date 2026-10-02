@@ -74,7 +74,9 @@
   // ───────────────────────── Screens ─────────────────────────
   function show(id) {
     ["screenLogin", "screenForcePwd", "screenInspector", "screenOfficer"].forEach((s) => { $(s).style.display = s === id ? "" : "none"; });
-    $("topbar").style.display = (id === "screenInspector" || id === "screenOfficer") ? "" : "none";
+    const inApp = (id === "screenInspector" || id === "screenOfficer");
+    $("topbar").style.display = inApp ? "" : "none";
+    $("appFooter").style.display = inApp ? "" : "none";
   }
 
   async function loadPublicSettings() {
@@ -205,7 +207,7 @@
     list.innerHTML = state.waterBodies.map((w) => {
       const t = w.today; if (t) done++;
       const queued = pendingLocal[w.wbId];
-      const badge = t ? `<span class="wb-badge ${t.status}">${STATUS_MR[t.status] || t.status}</span>` : queued ? `<span class="wb-badge pending">⏳ पाठवणे बाकी</span>` : `<span class="wb-badge pending">आज बाकी</span>`;
+      const badge = t ? `<span class="wb-badge ${t.status}">${STATUS_MR[t.status] || t.status}</span>` : queued ? `<span class="wb-badge pending queued">⏳ पाठवणे बाकी</span>` : `<span class="wb-badge pending">आज बाकी</span>`;
       const geo = w.lat ? `<div class="wb-geo"><i class="bi bi-geo"></i> नोंदवलेले स्थळ: ${w.lat.toFixed(5)}, ${w.lng.toFixed(5)} · त्रिज्या ${w.geofenceM} मी.${w.locationStatus === "PROPOSED" ? " (मंजुरी बाकी)" : ""}</div>` : `<div class="wb-geo"><i class="bi bi-geo"></i> स्थळाचे GPS अद्याप नाही — तुमच्या पहिल्या नोंदीचे GPS नोंदवले जाईल</div>`;
       const btn = !mobile ? "" : t ? `<button class="btn btn-outline-secondary" data-wb="${w.wbId}" data-edit="1">नोंद बदला</button>` : `<button class="btn btn-water" data-wb="${w.wbId}">नोंद करा</button>`;
       const photo = t && t.photo ? `<a class="btn btn-outline-secondary" href="${t.photo}" target="_blank" rel="noopener"><i class="bi bi-image"></i> फोटो</a>` : "";
@@ -380,9 +382,16 @@
       let extra = "";
       if (r.withinGeofence === "N") extra = `<br><span style="color:#c1292e">⚠️ तुम्ही स्थळापासून ${r.distanceM} मी. दूर होता (मर्यादा ${r.geofenceM} मी.). ही नोंद वरिष्ठांना फ्लॅग दिसेल.</span>`;
       if (r.locationProposed) extra = "<br>📍 या जलसाठ्याचे स्थळ तुमच्या GPS वरून नोंदवले गेले (मंजुरी बाकी).";
-      await Swal.fire({ icon: "success", title: r.message, html: `${fmtMr(r.reportDate)} · ${q.wbName}${extra}` });
+      // ✅ तात्काळ कार्ड अपडेट (सर्व्हरची वाट न पाहता), मग पार्श्वभूमीत ताजी यादी
+      if (r.reportDate === todayStr()) {
+        const w = state.waterBodies.find((x) => x.wbId === q.payload.wbId);
+        if (w) { w.today = { status: q.payload.status, entryId: r.entryId, photo: r.photoUrl }; if (!w.lat && r.locationProposed) { w.lat = q.payload.lat; w.lng = q.payload.lng; w.locationStatus = "PROPOSED"; } }
+        store.set("jn_wbs", JSON.stringify(state.waterBodies));
+        renderWaterBodies();
+      }
       if (fromForm) { closeEntry(); history.replaceState(null, ""); }
-      await loadWaterBodies();
+      await Swal.fire({ icon: "success", title: r.message, html: `${fmtMr(r.reportDate)} · ${q.wbName}${extra}` });
+      loadWaterBodies(true).catch(() => {});
       return true;
     } catch (err) {
       Swal.close();
@@ -516,6 +525,7 @@
   // ───────────────────────── Boot ─────────────────────────
   document.addEventListener("DOMContentLoaded", async () => {
     $("appVersion").textContent = CFG.APP_VERSION || "";
+    document.querySelectorAll(".appVersion2").forEach((el) => { el.textContent = CFG.APP_VERSION || ""; });
     runSplash(); updateNet();
     loadPublicSettings();
     if (restoreSession()) enterApp(); else show("screenLogin");

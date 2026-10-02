@@ -1,9 +1,9 @@
 // JAL-NETRA Service Worker — अ‍ॅप शेल कॅश (ऑफलाइन उघडण्यासाठी)
 // कोड बदलल्यावर CACHE_VERSION वाढवा → जुना कॅश आपोआप साफ होतो
-const CACHE_VERSION = "jalnetra-v2";
+const CACHE_VERSION = "jalnetra-v3";
 const APP_SHELL = [
   "./", "./index.html", "./style.css", "./app.js", "./config.js", "./manifest.json",
-  "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png", "./icons/cracked-earth.svg"
+  "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png", "./icons/cracked-earth.svg", "./icons/earth.jpg"
 ];
 
 self.addEventListener("install", (e) => {
