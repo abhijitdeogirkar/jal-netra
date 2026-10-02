@@ -45,6 +45,16 @@
   const toast = (icon, title) => Swal.fire({ toast: true, position: "top", icon, title, showConfirmButton: false, timer: 2200 });
   const busy = (title) => Swal.fire({ title, allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
 
+  // ───────────────────────── Logo fallback (icons/ न सापडल्यास inline SVG) ─────────────────────────
+  const LOGO_SVG = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="22" fill="#5a3a1c"/><path d="M50 14 C62 32 76 44 76 60 a26 26 0 0 1 -52 0 C24 44 38 32 50 14z" fill="#0b4f6c"/><ellipse cx="50" cy="60" rx="17" ry="9" fill="#fdfaf4"/><circle cx="50" cy="60" r="7.5" fill="#1b998b"/><circle cx="50" cy="60" r="3.3" fill="#161210"/><circle cx="53" cy="57" r="1.5" fill="#fff"/></svg>');
+  document.querySelectorAll("img.jn-logo").forEach((img) => {
+    img.addEventListener("error", () => { img.src = LOGO_SVG; }, { once: true });
+    if (img.complete && img.naturalWidth === 0) img.src = LOGO_SVG; // आधीच तुटले असेल तर
+  });
+
+  const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true || document.referrer.includes("android-app://");
+  const isIOS = () => /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
   // ───────────────────────── Splash ─────────────────────────
   function runSplash() {
     const s = $("splash");
@@ -156,6 +166,7 @@
   }
 
   // ───────────────────────── Inspector home ─────────────────────────
+  $("btnRefresh").addEventListener("click", () => { toast("info", "रिफ्रेश होत आहे…"); loadWaterBodies(); });
   async function initInspector() {
     $("todayLabel").textContent = fmtMr(todayStr());
     const mobile = isMobileDevice();
@@ -164,12 +175,16 @@
     await loadWaterBodies();
   }
 
-  async function loadWaterBodies() {
+  async function loadWaterBodies(isRetry) {
     const list = $("wbList");
+    if (!isRetry) list.innerHTML = '<div class="loading"><span class="spinner-border spinner-border-sm"></span> जलसाठे लोड होत आहेत…</div>';
     try {
       const r = await api("getMyWaterBodies");
       if (!r.success) { list.innerHTML = `<div class="empty">${r.message}</div>`; return; }
       state.waterBodies = r.waterBodies || [];
+      console.log("getMyWaterBodies meta:", r.meta);
+      // सर्व्हरने रिकामी यादी दिली पण मॅपिंग अस्तित्वात आहे → एकदा आपोआप पुन्हा प्रयत्न
+      if (!state.waterBodies.length && !isRetry) { list.innerHTML = '<div class="loading">पुन्हा तपासत आहे…</div>'; await new Promise((res) => setTimeout(res, 2000)); return loadWaterBodies(true); }
       store.set("jn_wbs", JSON.stringify(state.waterBodies));
     } catch (e) {
       // ऑफलाइन → शेवटची यादी वापरा
@@ -342,10 +357,11 @@
     }
   });
 
+  // नेटवर्क चाचणी: स्वतःच्याच साईटवरील छोटी फाईल (Apps Script नव्हे — ते नेहमीच ३–४ से. घेते)
   async function testNetwork() {
     if (!navigator.onLine) return false;
-    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), CFG.NETWORK_TEST_TIMEOUT_MS || 2500);
-    try { await fetch(CFG.API_URL, { method: "GET", redirect: "follow", cache: "no-store", signal: ctrl.signal }); return true; }
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), CFG.NETWORK_TEST_TIMEOUT_MS || 4000);
+    try { const r = await fetch("manifest.json?ping=" + Date.now(), { cache: "no-store", signal: ctrl.signal }); return r.ok; }
     catch (e) { return false; } finally { clearTimeout(t); }
   }
 
@@ -458,11 +474,41 @@
     $("calStats").innerHTML = `<div>नोंद झालेले दिवस<b>${stats.reportedDays || 0}</b></div><div>उपसा आढळलेले दिवस<b style="color:#c1292e">${stats.redDays || 0}</b></div>`;
   }
 
-  // ───────────────────────── PWA install + SW ─────────────────────────
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault(); state.deferredInstall = e;
-    if (store.get("jn_hide_install") !== "1") setTimeout(() => { $("installBanner").style.display = ""; }, 4000);
+  // ───────────────────────── PWA install (लॉगिनपूर्वी मोठा पॉपअप) + SW ─────────────────────────
+  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); state.deferredInstall = e; if ($("installBtn")) $("installBtn").disabled = false; });
+  window.addEventListener("appinstalled", () => {
+    store.set("jn_installed", "1"); $("installBanner").style.display = "none";
+    Swal.fire({ icon: "success", title: "अ‍ॅप इन्स्टॉल झाले ✅", html: "<div style='text-align:left;line-height:1.7'>आता:<br>1️⃣ हा ब्राउझर (Chrome) टॅब <b>बंद करा</b><br>2️⃣ होम स्क्रीनवरील <b>JAL-NETRA</b> आयकॉनवरून अ‍ॅप उघडा<br><small>ब्राउझरमध्ये नव्हे, अ‍ॅपमधूनच वापरल्यास कॅमेरा, GPS आणि ऑफलाइन नोंदी नीट चालतात.</small></div>", confirmButtonText: "समजले", allowOutsideClick: false });
   });
+
+  async function showInstallGate() {
+    if (isStandalone() || store.get("jn_install_skip") === "1") return;
+    // beforeinstallprompt थोड्या वेळाने येतो — १.५ से. थांबा
+    if (!state.deferredInstall) await new Promise((r) => setTimeout(r, 1500));
+    const canPrompt = !!state.deferredInstall;
+    const manual = isIOS()
+      ? "Safari मध्ये खालचे <b>Share (⬆️)</b> बटन → <b>Add to Home Screen</b> → Add"
+      : "Chrome च्या वरच्या उजव्या <b>⋮</b> मेनूत → <b>Add to Home screen</b> / <b>Install app</b> → Install";
+    const r = await Swal.fire({
+      imageUrl: "icons/icon-192.png", imageWidth: 84, imageHeight: 84,
+      title: "प्रथम अ‍ॅप इन्स्टॉल करा",
+      html: `<div style="text-align:left;line-height:1.7;font-size:15px">
+        JAL-NETRA हे <b>ब्राउझरमध्ये नव्हे, तर इन्स्टॉल केलेले अ‍ॅप म्हणून</b> वापरायचे आहे.<br>
+        इन्स्टॉल झाल्यावर <b>ब्राउझर बंद करून</b> होम स्क्रीनवरील आयकॉनवरून उघडा.<br><br>
+        ${canPrompt ? "खालील बटन दाबा — एका टॅपमध्ये इन्स्टॉल होईल." : "या फोनवर स्वयंचलित इन्स्टॉल बटन उपलब्ध नाही, म्हणून:<br>" + manual}
+      </div>`,
+      showCancelButton: true, confirmButtonText: canPrompt ? "📲 अ‍ॅप इन्स्टॉल करा" : "समजले, मी इन्स्टॉल करतो",
+      cancelButtonText: "ब्राउझरमध्येच पुढे जा", confirmButtonColor: "#0b4f6c", cancelButtonColor: "#8a5a30",
+      allowOutsideClick: false, allowEscapeKey: false, reverseButtons: true
+    });
+    if (r.isConfirmed && canPrompt) {
+      state.deferredInstall.prompt(); const c = await state.deferredInstall.userChoice; state.deferredInstall = null;
+      if (c.outcome !== "accepted") toast("info", "नंतर ⋮ मेनूतून Install करू शकता");
+    } else if (r.dismiss === Swal.DismissReason.cancel) {
+      store.set("jn_install_skip", "1"); // पुन्हा त्रास नको; खालचा छोटा बॅनर राहील
+      if (state.deferredInstall) $("installBanner").style.display = "";
+    }
+  }
   $("installBtn").addEventListener("click", async () => { if (!state.deferredInstall) return; state.deferredInstall.prompt(); await state.deferredInstall.userChoice; state.deferredInstall = null; $("installBanner").style.display = "none"; });
   $("installClose").addEventListener("click", () => { $("installBanner").style.display = "none"; store.set("jn_hide_install", "1"); });
   if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
@@ -473,5 +519,6 @@
     runSplash(); updateNet();
     loadPublicSettings();
     if (restoreSession()) enterApp(); else show("screenLogin");
+    setTimeout(showInstallGate, 3200); // पडदा उघडल्यानंतर लगेच
   });
 })();
