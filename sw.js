@@ -16,6 +16,8 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
+// 🔹 हा नवीन बदल: chrome-extension सारख्या लिंक सोडून द्या
+  if (!url.protocol.startsWith('http')) return;  
   // API कॉल्स (Apps Script) आणि POST कधीही कॅश करू नका
   if (e.request.method !== "GET" || url.hostname.includes("script.google.com") || url.hostname.includes("googleusercontent.com")) return;
   // CDN (bootstrap/sweetalert/fonts): network-first, fallback cache
