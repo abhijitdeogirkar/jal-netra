@@ -100,12 +100,23 @@
     if (tk && us) { try { state.token = tk; state.user = JSON.parse(us); return true; } catch (e) {} }
     return false;
   }
-  function enterApp() {
+function enterApp() {
     $("topbarUser").textContent = `${state.user.name} · ${state.user.id}`;
-    if (state.user.role === "INSPECTOR") { show("screenInspector"); initInspector(); }
-    else { show("screenOfficer"); if (window.JN && window.JN.officer) window.JN.officer.init(); }
+    if (state.user.role === "INSPECTOR") { 
+        show("screenInspector"); 
+        initInspector(); 
+    } else { 
+        show("screenOfficer"); 
+        // 🔹 हा बदल सर्वात महत्त्वाचा आहे:
+        if (window.JN && window.JN.officer) {
+            window.JN.officer.init(); 
+        } else {
+             console.error("officer.js लोड झालेले नाही!");
+        }
+    }
   }
-  // इतर मॉड्यूल्ससाठी (officer.js)
+
+  // 🔹 इतर मॉड्यूल्ससाठी (officer.js) window.JN ऑब्जेक्ट उपलब्ध करून द्या
   window.JN = { api, state, toast, busy, fmtMr, todayStr, STATUS_MR, MONTHS_MR, roleLabel, show, $ };
   const roleLabel = (r) => ({ INSPECTOR: "निरीक्षक", TALUKA_MONITOR: "तालुका मॉनिटर", AGENCY_HEAD: "एजन्सी प्रमुख (जिल्हा)", DISTRICT_CELL: "जिल्हा मॉनिटरिंग सेल", COLLECTOR: "जिल्हाधिकारी" }[r] || r);
 
