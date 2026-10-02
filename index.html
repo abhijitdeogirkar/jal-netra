@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>JAL-NETRA (जलनेत्र) — वाशिम</title>
+  <meta name="theme-color" content="#0b4f6c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="JAL-NETRA">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════════ SPLASH (पडदा) ═══════════════ -->
+<div id="splash" class="splash" aria-hidden="true">
+  <div class="splash-earth"></div>
+  <div class="splash-panel splash-left"></div>
+  <div class="splash-panel splash-right"></div>
+  <div class="splash-content">
+    <img src="icons/icon-192.png" alt="" class="splash-logo">
+    <h1 class="splash-title">JAL-NETRA</h1>
+    <div class="splash-devnagari">जलनेत्र</div>
+    <p class="splash-tagline" id="splashTagline">दुष्काळाशी लढा, थेंबाथेंबावर पहारा</p>
+    <p class="splash-sub" id="splashSubtitle">जिल्हाधिकारी कार्यालय, वाशिम</p>
+  </div>
+</div>
+
+<!-- ═══════════════ APP SHELL ═══════════════ -->
+<div id="app" class="app">
+
+  <!-- Header -->
+  <header class="topbar" id="topbar" style="display:none;">
+    <div class="topbar-brand">
+      <img src="icons/icon-192.png" alt="">
+      <div>
+        <div class="topbar-title">JAL-NETRA</div>
+        <div class="topbar-sub" id="topbarUser">—</div>
+      </div>
+    </div>
+    <button class="btn-icon" id="btnLogout" title="लॉगआउट"><i class="bi bi-box-arrow-right"></i></button>
+  </header>
+
+  <!-- ─────────── LOGIN ─────────── -->
+  <section id="screenLogin" class="screen screen-earth">
+    <div class="login-card">
+      <div class="login-head">
+        <img src="icons/icon-192.png" alt="" class="login-logo">
+        <div>
+          <div class="login-brand">JAL-NETRA <span>जलनेत्र</span></div>
+          <div class="login-office">जिल्हाधिकारी कार्यालय, वाशिम</div>
+        </div>
+      </div>
+
+      <ul class="nav nav-pills seg mb-3" role="tablist">
+        <li class="nav-item" role="presentation"><button class="nav-link active" id="tabLogin" data-bs-toggle="pill" data-bs-target="#paneLogin" type="button">लॉगिन</button></li>
+        <li class="nav-item" role="presentation" id="tabRegisterItem" style="display:none;"><button class="nav-link" id="tabRegister" data-bs-toggle="pill" data-bs-target="#paneRegister" type="button">नवीन नोंदणी</button></li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="paneLogin">
+          <form id="loginForm" autocomplete="on">
+            <label class="form-label" for="loginId">युजर आयडी किंवा मोबाईल</label>
+            <input type="text" id="loginId" class="form-control form-control-lg mb-3" placeholder="उदा. INS-WSM-001" autocapitalize="characters" required>
+            <label class="form-label" for="loginPwd">पासवर्ड</label>
+            <div class="input-group input-group-lg mb-4">
+              <input type="password" id="loginPwd" class="form-control" required autocomplete="current-password">
+              <button class="btn btn-outline-secondary" type="button" id="togglePwd" aria-label="पासवर्ड दाखवा"><i class="bi bi-eye"></i></button>
+            </div>
+            <button type="submit" class="btn btn-water btn-lg w-100" id="loginBtn">लॉगिन करा</button>
+          </form>
+        </div>
+
+        <div class="tab-pane fade" id="paneRegister">
+          <form id="registerForm">
+            <div class="mb-2"><label class="form-label">पूर्ण नाव</label><input class="form-control" name="name" required></div>
+            <div class="mb-2"><label class="form-label">मोबाईल (१० अंकी)</label><input class="form-control" name="mobile" pattern="[0-9]{10}" inputmode="numeric" required></div>
+            <div class="row g-2 mb-2">
+              <div class="col-6"><label class="form-label">तालुका</label><select class="form-select" name="taluka" id="regTaluka" required></select></div>
+              <div class="col-6"><label class="form-label">भूमिका</label>
+                <select class="form-select" name="role"><option value="INSPECTOR">निरीक्षक</option><option value="TALUKA_MONITOR">तालुका मॉनिटर</option></select></div>
+            </div>
+            <div class="mb-2"><label class="form-label">एजन्सी / विभाग</label><input class="form-control" name="agency" placeholder="उदा. जलसंपदा" required></div>
+            <div class="mb-3"><label class="form-label">वरिष्ठ अधिकाऱ्याचा ID (माहीत असल्यास)</label><input class="form-control" name="reportsTo" placeholder="उदा. TM-JSD-WSM-01"></div>
+            <button type="submit" class="btn btn-earth w-100" id="registerBtn">नोंदणी करा</button>
+          </form>
+        </div>
+      </div>
+      <div class="login-foot">v<span id="appVersion"></span> · <span id="netState" class="net-dot"></span></div>
+    </div>
+  </section>
+
+  <!-- ─────────── FORCE PASSWORD ─────────── -->
+  <section id="screenForcePwd" class="screen screen-earth" style="display:none;">
+    <div class="login-card">
+      <h2 class="h5 mb-1">नवीन पासवर्ड ठेवा</h2>
+      <p class="text-muted small mb-3">सुरक्षिततेसाठी पहिल्या लॉगिनला डिफॉल्ट पासवर्ड बदलणे आवश्यक आहे.</p>
+      <input type="password" id="newPwd1" class="form-control form-control-lg mb-2" placeholder="नवीन पासवर्ड (किमान ४ अक्षरे)">
+      <input type="password" id="newPwd2" class="form-control form-control-lg mb-3" placeholder="पुन्हा टाका">
+      <button class="btn btn-water btn-lg w-100" id="savePwdBtn">पासवर्ड सेव्ह करा</button>
+    </div>
+  </section>
+
+  <!-- ─────────── INSPECTOR HOME ─────────── -->
+  <section id="screenInspector" class="screen" style="display:none;">
+    <div id="offlineBanner" class="offline-banner" style="display:none;">
+      <div><strong id="offlineCount">0</strong> नोंदी मोबाईलमध्ये सेव्ह आहेत, सर्व्हरवर पाठवायच्या बाकी.</div>
+      <button class="btn btn-sm btn-light fw-bold" id="btnSyncNow"><i class="bi bi-cloud-upload"></i> आता पाठवा</button>
+    </div>
+
+    <div id="desktopGuard" class="alert-earth" style="display:none;">
+      <i class="bi bi-phone"></i> दैनिक नोंद फक्त मोबाईलवरून करता येते. कृपया हे अ‍ॅप मोबाईलवर उघडा.
+    </div>
+
+    <div class="date-strip">
+      <div><div class="date-strip-label">आजची तारीख</div><div class="date-strip-val" id="todayLabel">—</div></div>
+      <div class="text-end"><div class="date-strip-label">आज नोंद</div><div class="date-strip-val"><span id="todayDone">0</span>/<span id="todayTotal">0</span></div></div>
+    </div>
+
+    <ul class="nav seg seg-wide" role="tablist">
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#paneWB" type="button"><i class="bi bi-droplet-half"></i> माझे जलसाठे</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#paneCal" type="button" id="tabCal"><i class="bi bi-calendar3"></i> कॅलेंडर</button></li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="paneWB">
+        <div id="wbList" class="wb-list"><div class="loading">जलसाठे लोड होत आहेत…</div></div>
+      </div>
+      <div class="tab-pane fade" id="paneCal">
+        <div class="cal-head">
+          <button class="btn-icon" id="calPrev"><i class="bi bi-chevron-left"></i></button>
+          <div class="cal-title" id="calTitle">—</div>
+          <button class="btn-icon" id="calNext"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <select id="calWbFilter" class="form-select form-select-sm mb-2"><option value="">सर्व जलसाठे (सर्वात गंभीर स्थिती)</option></select>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <span><i class="dot dot-green"></i>सुरक्षित</span><span><i class="dot dot-red"></i>उपसा</span><span><i class="dot dot-yellow"></i>कारवाई</span><span><i class="dot dot-grey"></i>नोंद नाही</span>
+        </div>
+        <div class="cal-stats" id="calStats"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── OFFICER PLACEHOLDER (टप्पा ३) ─────────── -->
+  <section id="screenOfficer" class="screen" style="display:none;">
+    <div class="placeholder-card">
+      <i class="bi bi-speedometer2"></i>
+      <h2 class="h5">मॉनिटरिंग डॅशबोर्ड</h2>
+      <p class="text-muted mb-0" id="officerRoleLabel">तुमचा डॅशबोर्ड आणि नकाशा टप्पा ३ मध्ये जोडला जाईल.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════ ENTRY FORM (full-screen sheet) ═══════════════ -->
+<div id="entrySheet" class="sheet" style="display:none;">
+  <div class="sheet-head">
+    <button class="btn-icon" id="entryClose"><i class="bi bi-arrow-left"></i></button>
+    <div><div class="sheet-title" id="entryWbName">—</div><div class="sheet-sub" id="entryWbMeta">—</div></div>
+  </div>
+  <form id="entryForm" class="sheet-body">
+    <div class="field">
+      <div class="field-label">आजची स्थिती</div>
+      <div class="status-grid">
+        <label class="status-opt st-safe"><input type="radio" name="status" value="SAFE" required><span><i class="bi bi-shield-check"></i>सुरक्षित<small>उपसा नाही</small></span></label>
+        <label class="status-opt st-red"><input type="radio" name="status" value="ILLEGAL_PUMPING"><span><i class="bi bi-exclamation-triangle"></i>बेकायदेशीर उपसा<small>आढळला</small></span></label>
+        <label class="status-opt st-yellow"><input type="radio" name="status" value="ACTION_TAKEN"><span><i class="bi bi-hammer"></i>कारवाई केली<small>उपसा थांबवला</small></span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="entryRemark">शेरा</label>
+      <textarea id="entryRemark" class="form-control" rows="2" maxlength="300" placeholder="उदा. जलसाठा परिसर शांत, कोणताही पंप आढळला नाही" required></textarea>
+    </div>
+    <div class="field" id="actionField" style="display:none;">
+      <label class="field-label" for="entryAction">कारवाईचा तपशील</label>
+      <textarea id="entryAction" class="form-control" rows="2" maxlength="300" placeholder="उदा. २ विद्युत पंप जप्त, पंचनामा केला, तलाठ्यांना कळवले"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">स्थळाचे GPS</div>
+      <div class="gps-box" id="gpsBox">
+        <button type="button" class="btn btn-earth w-100" id="btnGps"><i class="bi bi-geo-alt"></i> लोकेशन मिळवा</button>
+        <div class="gps-msg" id="gpsMsg"></div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">स्थळाचा फोटो (कॅमेरा)</div>
+      <input type="file" id="photoInput" accept="image/*" capture="environment" hidden>
+      <button type="button" class="btn btn-water w-100" id="btnPhoto"><i class="bi bi-camera"></i> फोटो काढा</button>
+      <div class="photo-preview" id="photoPreview" style="display:none;"><img id="photoImg" alt="फोटो प्रिव्ह्यू"><button type="button" class="btn btn-sm btn-light" id="btnRetake">पुन्हा काढा</button></div>
+    </div>
+    <button type="submit" class="btn btn-submit w-100" id="entrySubmit">नोंद सेव्ह करा</button>
+  </form>
+</div>
+
+<!-- A2HS बॅनर -->
+<div id="installBanner" class="install-banner" style="display:none;">
+  <img src="icons/icon-192.png" alt="">
+  <div class="flex-grow-1"><strong>अ‍ॅप इन्स्टॉल करा</strong><br><small>होम स्क्रीनवरून एका टॅपमध्ये उघडा</small></div>
+  <button class="btn btn-sm btn-water" id="installBtn">इन्स्टॉल</button>
+  <button class="btn-icon" id="installClose"><i class="bi bi-x-lg"></i></button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

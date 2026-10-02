@@ -1,0 +1,16 @@
+{
+  "name": "JAL-NETRA (जलनेत्र) — वाशिम",
+  "short_name": "JAL-NETRA",
+  "description": "जलसाठा संरक्षण दैनिक मॉनिटरिंग — जिल्हाधिकारी कार्यालय, वाशिम",
+  "lang": "mr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#3e2714",
+  "theme_color": "#0b4f6c",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
