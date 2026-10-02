@@ -117,9 +117,12 @@ function enterApp() {
   }
 
   // 🔹 इतर मॉड्यूल्ससाठी (officer.js) window.JN ऑब्जेक्ट उपलब्ध करून द्या
-  window.JN = { api, state, toast, busy, fmtMr, todayStr, STATUS_MR, MONTHS_MR, roleLabel, show, $ };
-  const roleLabel = (r) => ({ INSPECTOR: "निरीक्षक", TALUKA_MONITOR: "तालुका मॉनिटर", AGENCY_HEAD: "एजन्सी प्रमुख (जिल्हा)", DISTRICT_CELL: "जिल्हा मॉनिटरिंग सेल", COLLECTOR: "जिल्हाधिकारी" }[r] || r);
+  // १. आधी roleLabel ची व्याख्या करा
+const roleLabel = (r) => ({ INSPECTOR: "निरीक्षक", TALUKA_MONITOR: "तालुका मॉनिटर", AGENCY_HEAD: "एजन्सी प्रमुख (जिल्हा)", DISTRICT_CELL: "जिल्हा मॉनिटरिंग सेल", COLLECTOR: "जिल्हाधिकारी" }[r] || r);
 
+// २. त्यानंतर window.JN मध्ये ते वापरा
+window.JN = { api, state, toast, busy, fmtMr, todayStr, STATUS_MR, MONTHS_MR, roleLabel, show, $ };
+   
   $("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const id = $("loginId").value.trim(), pwd = $("loginPwd").value;
