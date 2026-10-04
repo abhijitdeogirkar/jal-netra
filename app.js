@@ -83,22 +83,21 @@
     window.JN.loadLiveFeed("feedListIns", d); 
   });
   
-  async function initInspector() { 
+async function initInspector() { 
     $("todayLabel").textContent = fmtMr(todayStr()); 
     $("desktopGuard").style.display = isMobileDevice() ? "none" : ""; 
     await refreshOfflineBanner(); 
     
-    // 🔹 नवीन: फीडची तारीख बदलण्याची सोय
     const fDate = $("feedDateIns");
     if(fDate) {
-       fDate.value = todayStr();
-       fDate.max = todayStr();
+       fDate.value = todayStr(); fDate.max = todayStr();
        fDate.addEventListener("change", () => window.JN.loadLiveFeed("feedListIns", fDate.value));
+       $("feedPrevIns").addEventListener("click", () => { let d = new Date(fDate.value); d.setDate(d.getDate() - 1); fDate.value = fmtDate(d); window.JN.loadLiveFeed("feedListIns", fDate.value); });
+       $("feedNextIns").addEventListener("click", () => { let d = new Date(fDate.value); d.setDate(d.getDate() + 1); if(fDate.value <= todayStr()) { fDate.value = fmtDate(d); window.JN.loadLiveFeed("feedListIns", fDate.value); } });
     }
     
     window.JN.loadLiveFeed("feedListIns", todayStr()); 
     $("tabFeedIns").addEventListener("shown.bs.tab", () => window.JN.loadLiveFeed("feedListIns", fDate ? fDate.value : todayStr())); 
-    
     await loadWaterBodies(); 
   }
    
