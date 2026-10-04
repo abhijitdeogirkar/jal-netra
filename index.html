@@ -167,7 +167,14 @@
     </ul>
 
     <div class="tab-content">
-      <div class="tab-pane fade show active" id="offFeed"><div id="feedListOff"><div class="loading">फीड लोड होत आहे…</div></div></div>
+      <div class="tab-pane fade show active" id="offFeed">
+        <div class="feed-header">
+           <button class="btn-icon" id="feedPrevOff"><i class="bi bi-chevron-left"></i></button>
+           <input type="date" id="feedDateOff" class="date-pick">
+           <button class="btn-icon" id="feedNextOff"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <div id="feedListOff"><div class="loading">फीड लोड होत आहे…</div></div>
+      </div>
       
       <div class="tab-pane fade" id="offOverview">
         <div class="kpi-grid" id="kpiGrid"></div>
