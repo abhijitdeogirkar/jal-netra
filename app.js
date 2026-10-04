@@ -76,9 +76,32 @@
 
   function isMobileDevice() { return (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "")) && (("ontouchstart" in window) || navigator.maxTouchPoints > 1) && window.innerWidth <= 900; }
 
-  $("btnRefresh").addEventListener("click", () => { toast("info", "रिफ्रेश होत आहे…"); loadWaterBodies(); window.JN.loadLiveFeed("feedListIns", todayStr()); });
-  async function initInspector() { $("todayLabel").textContent = fmtMr(todayStr()); $("desktopGuard").style.display = isMobileDevice() ? "none" : ""; await refreshOfflineBanner(); window.JN.loadLiveFeed("feedListIns", todayStr()); $("tabFeedIns").addEventListener("shown.bs.tab", () => window.JN.loadLiveFeed("feedListIns", todayStr())); await loadWaterBodies(); }
-
+ $("btnRefresh").addEventListener("click", () => { 
+    toast("info", "रिफ्रेश होत आहे…"); 
+    loadWaterBodies(); 
+    const d = $("feedDateIns") ? $("feedDateIns").value : todayStr();
+    window.JN.loadLiveFeed("feedListIns", d); 
+  });
+  
+  async function initInspector() { 
+    $("todayLabel").textContent = fmtMr(todayStr()); 
+    $("desktopGuard").style.display = isMobileDevice() ? "none" : ""; 
+    await refreshOfflineBanner(); 
+    
+    // 🔹 नवीन: फीडची तारीख बदलण्याची सोय
+    const fDate = $("feedDateIns");
+    if(fDate) {
+       fDate.value = todayStr();
+       fDate.max = todayStr();
+       fDate.addEventListener("change", () => window.JN.loadLiveFeed("feedListIns", fDate.value));
+    }
+    
+    window.JN.loadLiveFeed("feedListIns", todayStr()); 
+    $("tabFeedIns").addEventListener("shown.bs.tab", () => window.JN.loadLiveFeed("feedListIns", fDate ? fDate.value : todayStr())); 
+    
+    await loadWaterBodies(); 
+  }
+   
   async function loadWaterBodies(isRetry) {
     const list = $("wbList"); if (!isRetry) list.innerHTML = '<div class="loading"><span class="spinner-border spinner-border-sm"></span> जलसाठे लोड होत आहेत…</div>';
     try {
