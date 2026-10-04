@@ -110,8 +110,7 @@
       <button class="btn btn-water btn-lg w-100" id="savePwdBtn">सेव्ह करा</button>
     </div>
   </section>
-
- <!-- INSPECTOR HOME -->
+<!-- INSPECTOR HOME -->
   <section id="screenInspector" class="screen" style="display:none;">
     <div id="offlineBanner" class="offline-banner" style="display:none;">
       <div><strong id="offlineCount">0</strong> नोंदी पाठवायच्या बाकी.</div>
@@ -122,7 +121,7 @@
       <i class="bi bi-phone"></i> दैनिक नोंद फक्त मोबाईलवरून करता येते. कृपया हे अ‍ॅप मोबाईलवर उघडा.
     </div>
 
-    <!-- 🔹 नवीन: निळ्या कार्डमधील < तारीख > व्यवस्था -->
+    <!-- निळ्या कार्डमधील < तारीख > व्यवस्था -->
     <div class="date-strip">
       <div class="d-flex align-items-center gap-1">
         <button class="btn-icon" id="dashPrevIns" style="color:#fff"><i class="bi bi-chevron-left"></i></button>
@@ -135,17 +134,34 @@
       </div>
     </div>
 
-    <!-- 🔹 कॅलेंडर काढून फक्त २ टॅब ठेवले -->
+    <!-- 🔹 तीनही टॅब आता दिसतील -->
     <ul class="nav seg seg-wide" role="tablist">
-      <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#paneFeedIns" type="button" id="tabFeedIns"><i class="bi bi-broadcast"></i> लाईव्ह फीड</button></li>
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#paneFeedIns" type="button" id="tabFeedIns"><i class="bi bi-broadcast"></i> फीड</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#paneWB" type="button"><i class="bi bi-droplet-half"></i> माझे जलसाठे</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#paneCal" type="button" id="tabCal"><i class="bi bi-calendar3"></i> कॅलेंडर</button></li>
     </ul>
 
     <div class="tab-content">
       <div class="tab-pane fade show active" id="paneFeedIns"><div id="feedListIns"><div class="loading">फीड लोड होत आहे…</div></div></div>
       <div class="tab-pane fade" id="paneWB"><div id="wbList" class="wb-list"></div></div>
+      
+      <!-- 🔹 कॅलेंडरचा भाग परत आला -->
+      <div class="tab-pane fade" id="paneCal">
+        <div class="cal-head">
+          <button class="btn-icon" id="calPrev"><i class="bi bi-chevron-left"></i></button>
+          <div class="cal-title" id="calTitle">—</div>
+          <button class="btn-icon" id="calNext"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <select id="calWbFilter" class="form-select form-select-sm mb-2"><option value="">सर्व जलसाठे</option></select>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <span><i class="dot dot-green"></i>सुरक्षित</span><span><i class="dot dot-red"></i>उपसा</span><span><i class="dot dot-yellow"></i>कारवाई</span><span><i class="dot dot-grey"></i>नोंद नाही</span>
+        </div>
+        <div class="cal-stats" id="calStats"></div>
+      </div>
     </div>
   </section>
+ 
   <!-- OFFICER DASHBOARD -->
   <section id="screenOfficer" class="screen" style="display:none;">
     <div class="date-strip">
