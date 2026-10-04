@@ -19,9 +19,18 @@
     if (!O.inited) {
       O.inited = true;
       $("offDate").value = O.date; $("offDate").max = todayStr();
-      $("offDate").addEventListener("change", () => { O.date = $("offDate").value || todayStr(); loadDashboard(); if (O.map) loadMap(); window.JN.loadLiveFeed("feedListOff", O.date); });
-      $("offRefresh").addEventListener("click", () => { toast("info", "रिफ्रेश…"); loadDashboard(); if (O.map) loadMap(); window.JN.loadLiveFeed("feedListOff", O.date); O.team = null; });
-      $("tabOffFeed").addEventListener("shown.bs.tab", () => window.JN.loadLiveFeed("feedListOff", O.date));
+      $("offDate").addEventListener("change", () => { O.date = $("offDate").value || todayStr(); loadDashboard(); if (O.map) loadMap(); });
+      $("offRefresh").addEventListener("click", () => { toast("info", "रिफ्रेश…"); loadDashboard(); if (O.map) loadMap(); window.JN.loadLiveFeed("feedListOff", $("feedDateOff").value); O.team = null; });
+      
+      const fDate = $("feedDateOff");
+      if(fDate) {
+         fDate.value = todayStr(); fDate.max = todayStr();
+         fDate.addEventListener("change", () => window.JN.loadLiveFeed("feedListOff", fDate.value));
+         $("feedPrevOff").addEventListener("click", () => { let d = new Date(fDate.value); d.setDate(d.getDate() - 1); fDate.value = fmtDate(d); window.JN.loadLiveFeed("feedListOff", fDate.value); });
+         $("feedNextOff").addEventListener("click", () => { let d = new Date(fDate.value); d.setDate(d.getDate() + 1); if(fDate.value <= todayStr()) { fDate.value = fmtDate(d); window.JN.loadLiveFeed("feedListOff", fDate.value); } });
+      }
+
+      $("tabOffFeed").addEventListener("shown.bs.tab", () => window.JN.loadLiveFeed("feedListOff", fDate.value));
       $("tabMap").addEventListener("shown.bs.tab", () => { ensureMap(); loadMap(); });
       $("tabTeam").addEventListener("shown.bs.tab", loadTeam);
       $("tabAdmin").addEventListener("shown.bs.tab", loadAdmin);
@@ -34,8 +43,7 @@
     $("tabAdminItem").style.display = (isCell || state.user.role === "AGENCY_HEAD" || state.user.role === "TALUKA_MONITOR") ? "" : "none";
     $("admSettingsTab").style.display = isCell ? "" : "none";
     
-    // 🔹 पहिल्यांदा उघडताना
-    window.JN.loadLiveFeed("feedListOff", O.date);
+    window.JN.loadLiveFeed("feedListOff", $("feedDateOff").value || todayStr());
     loadDashboard(); loadTrend();
   }
 
