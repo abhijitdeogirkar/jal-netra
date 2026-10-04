@@ -22,7 +22,7 @@
 </head>
 <body>
 
-<!-- ═══════════════ SPLASH (पडदा) ═══════════════ -->
+<!-- SPLASH -->
 <div id="splash" class="splash" aria-hidden="true">
   <div class="splash-earth"></div>
   <div class="splash-panel splash-left"></div>
@@ -38,22 +38,21 @@
   <div class="credit credit-light splash-credit">© 2026 · App designed &amp; developed by Abhijit Deogirkar, Agriculture Development Officer, Washim</div>
 </div>
 
-<!-- ═══════════════ APP SHELL ═══════════════ -->
 <div id="app" class="app">
 
-  <!-- Header -->
+  <!-- Header (नवीन: ठळक नाव) -->
   <header class="topbar" id="topbar" style="display:none;">
     <div class="topbar-brand">
       <img src="icons/icon-192.png" alt="" class="jn-logo">
       <div>
         <div class="topbar-title">JAL-NETRA</div>
-        <div class="topbar-sub" id="topbarUser">—</div>
+        <div class="topbar-sub" id="topbarUser" style="line-height:1.2;">—</div>
       </div>
     </div>
     <button class="btn-icon" id="btnLogout" title="लॉगआउट"><i class="bi bi-box-arrow-right"></i></button>
   </header>
 
-  <!-- ─────────── LOGIN ─────────── -->
+  <!-- LOGIN -->
   <section id="screenLogin" class="screen screen-earth">
     <div class="login-card">
       <div class="login-head">
@@ -66,8 +65,8 @@
       </div>
 
       <ul class="nav nav-pills seg mb-3" role="tablist">
-        <li class="nav-item" role="presentation"><button class="nav-link active" id="tabLogin" data-bs-toggle="pill" data-bs-target="#paneLogin" type="button">लॉगिन</button></li>
-        <li class="nav-item" role="presentation" id="tabRegisterItem" style="display:none;"><button class="nav-link" id="tabRegister" data-bs-toggle="pill" data-bs-target="#paneRegister" type="button">नवीन नोंदणी</button></li>
+        <li class="nav-item"><button class="nav-link active" id="tabLogin" data-bs-toggle="pill" data-bs-target="#paneLogin" type="button">लॉगिन</button></li>
+        <li class="nav-item" id="tabRegisterItem" style="display:none;"><button class="nav-link" id="tabRegister" data-bs-toggle="pill" data-bs-target="#paneRegister" type="button">नवीन नोंदणी</button></li>
       </ul>
 
       <div class="tab-content">
@@ -78,7 +77,7 @@
             <label class="form-label" for="loginPwd">पासवर्ड</label>
             <div class="input-group input-group-lg mb-4">
               <input type="password" id="loginPwd" class="form-control" required autocomplete="current-password">
-              <button class="btn btn-outline-secondary" type="button" id="togglePwd" aria-label="पासवर्ड दाखवा"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-outline-secondary" type="button" id="togglePwd"><i class="bi bi-eye"></i></button>
             </div>
             <button type="submit" class="btn btn-water btn-lg w-100" id="loginBtn">लॉगिन करा</button>
           </form>
@@ -87,76 +86,62 @@
         <div class="tab-pane fade" id="paneRegister">
           <form id="registerForm">
             <div class="mb-2"><label class="form-label">पूर्ण नाव</label><input class="form-control" name="name" required></div>
-            <div class="mb-2"><label class="form-label">मोबाईल (१० अंकी)</label><input class="form-control" name="mobile" pattern="[0-9]{10}" inputmode="numeric" required></div>
+            <div class="mb-2"><label class="form-label">मोबाईल (१० अंकी)</label><input class="form-control" name="mobile" pattern="[0-9]{10}" required></div>
             <div class="row g-2 mb-2">
               <div class="col-6"><label class="form-label">तालुका</label><select class="form-select" name="taluka" id="regTaluka" required></select></div>
-              <div class="col-6"><label class="form-label">भूमिका</label>
-                <select class="form-select" name="role"><option value="INSPECTOR">निरीक्षक</option><option value="TALUKA_MONITOR">तालुका मॉनिटर</option></select></div>
+              <div class="col-6"><label class="form-label">भूमिका</label><select class="form-select" name="role"><option value="INSPECTOR">निरीक्षक</option><option value="TALUKA_MONITOR">तालुका मॉनिटर</option></select></div>
             </div>
-            <div class="mb-2"><label class="form-label">एजन्सी / विभाग</label><input class="form-control" name="agency" placeholder="उदा. जलसंपदा" required></div>
-            <div class="mb-3"><label class="form-label">वरिष्ठ अधिकाऱ्याचा ID (माहीत असल्यास)</label><input class="form-control" name="reportsTo" placeholder="उदा. TM-JSD-WSM-01"></div>
-            <button type="submit" class="btn btn-earth w-100" id="registerBtn">नोंदणी करा</button>
+            <div class="mb-2"><label class="form-label">एजन्सी / विभाग</label><input class="form-control" name="agency" required></div>
+            <div class="mb-3"><label class="form-label">वरिष्ठाचा ID (ऐच्छिक)</label><input class="form-control" name="reportsTo"></div>
+            <button type="submit" class="btn btn-earth w-100">नोंदणी करा</button>
           </form>
         </div>
       </div>
       <div class="login-foot">v<span id="appVersion"></span> · <span id="netState" class="net-dot"></span></div>
-      <div class="credit mt-2">© 2026 · App designed &amp; developed by Abhijit Deogirkar, Agriculture Development Officer, Washim</div>
     </div>
   </section>
 
-  <!-- ─────────── FORCE PASSWORD ─────────── -->
   <section id="screenForcePwd" class="screen screen-earth" style="display:none;">
     <div class="login-card">
       <h2 class="h5 mb-1">नवीन पासवर्ड ठेवा</h2>
-      <p class="text-muted small mb-3">सुरक्षिततेसाठी पहिल्या लॉगिनला डिफॉल्ट पासवर्ड बदलणे आवश्यक आहे.</p>
+      <p class="text-muted small mb-3">पहिल्या लॉगिनला पासवर्ड बदलणे आवश्यक आहे.</p>
       <input type="password" id="newPwd1" class="form-control form-control-lg mb-2" placeholder="नवीन पासवर्ड (किमान ४ अक्षरे)">
       <input type="password" id="newPwd2" class="form-control form-control-lg mb-3" placeholder="पुन्हा टाका">
-      <button class="btn btn-water btn-lg w-100" id="savePwdBtn">पासवर्ड सेव्ह करा</button>
+      <button class="btn btn-water btn-lg w-100" id="savePwdBtn">सेव्ह करा</button>
     </div>
   </section>
 
-  <!-- ─────────── INSPECTOR HOME ─────────── -->
+  <!-- INSPECTOR HOME -->
   <section id="screenInspector" class="screen" style="display:none;">
     <div id="offlineBanner" class="offline-banner" style="display:none;">
-      <div><strong id="offlineCount">0</strong> नोंदी मोबाईलमध्ये सेव्ह आहेत, सर्व्हरवर पाठवायच्या बाकी.</div>
+      <div><strong id="offlineCount">0</strong> नोंदी पाठवायच्या बाकी.</div>
       <button class="btn btn-sm btn-light fw-bold" id="btnSyncNow"><i class="bi bi-cloud-upload"></i> आता पाठवा</button>
-    </div>
-
-    <div id="desktopGuard" class="alert-earth" style="display:none;">
-      <i class="bi bi-phone"></i> दैनिक नोंद फक्त मोबाईलवरून करता येते. कृपया हे अ‍ॅप मोबाईलवर उघडा.
     </div>
 
     <div class="date-strip">
       <div><div class="date-strip-label">आजची तारीख</div><div class="date-strip-val" id="todayLabel">—</div></div>
-      <div class="text-end d-flex align-items-center gap-2"><div><div class="date-strip-label">आज नोंद</div><div class="date-strip-val"><span id="todayDone">0</span>/<span id="todayTotal">0</span></div></div><button class="btn-icon" id="btnRefresh" title="रिफ्रेश"><i class="bi bi-arrow-clockwise"></i></button></div>
+      <div class="text-end d-flex align-items-center gap-2"><div><div class="date-strip-label">आज नोंद केलेले</div><div class="date-strip-val"><span id="todayDone">0</span>/<span id="todayTotal">0</span></div></div><button class="btn-icon" id="btnRefresh" title="रिफ्रेश"><i class="bi bi-arrow-clockwise"></i></button></div>
     </div>
 
     <ul class="nav seg seg-wide" role="tablist">
-      <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#paneWB" type="button"><i class="bi bi-droplet-half"></i> माझे जलसाठे</button></li>
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#paneFeedIns" type="button" id="tabFeedIns"><i class="bi bi-broadcast"></i> लाईव्ह फीड</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#paneWB" type="button"><i class="bi bi-droplet-half"></i> माझे जलसाठे</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#paneCal" type="button" id="tabCal"><i class="bi bi-calendar3"></i> कॅलेंडर</button></li>
     </ul>
 
     <div class="tab-content">
-      <div class="tab-pane fade show active" id="paneWB">
-        <div id="wbList" class="wb-list"><div class="loading">जलसाठे लोड होत आहेत…</div></div>
-      </div>
+      <div class="tab-pane fade show active" id="paneFeedIns"><div id="feedListIns"><div class="loading">फीड लोड होत आहे…</div></div></div>
+      <div class="tab-pane fade" id="paneWB"><div id="wbList" class="wb-list"></div></div>
       <div class="tab-pane fade" id="paneCal">
-        <div class="cal-head">
-          <button class="btn-icon" id="calPrev"><i class="bi bi-chevron-left"></i></button>
-          <div class="cal-title" id="calTitle">—</div>
-          <button class="btn-icon" id="calNext"><i class="bi bi-chevron-right"></i></button>
-        </div>
-        <select id="calWbFilter" class="form-select form-select-sm mb-2"><option value="">सर्व जलसाठे (सर्वात गंभीर स्थिती)</option></select>
+        <div class="cal-head"><button class="btn-icon" id="calPrev"><i class="bi bi-chevron-left"></i></button><div class="cal-title" id="calTitle">—</div><button class="btn-icon" id="calNext"><i class="bi bi-chevron-right"></i></button></div>
+        <select id="calWbFilter" class="form-select form-select-sm mb-2"><option value="">सर्व जलसाठे</option></select>
         <div class="cal-grid" id="calGrid"></div>
-        <div class="cal-legend">
-          <span><i class="dot dot-green"></i>सुरक्षित</span><span><i class="dot dot-red"></i>उपसा</span><span><i class="dot dot-yellow"></i>कारवाई</span><span><i class="dot dot-grey"></i>नोंद नाही</span>
-        </div>
         <div class="cal-stats" id="calStats"></div>
       </div>
     </div>
   </section>
 
-  <!-- ─────────── OFFICER / MONITOR DASHBOARD ─────────── -->
+  <!-- OFFICER DASHBOARD -->
   <section id="screenOfficer" class="screen" style="display:none;">
     <div class="date-strip">
       <div><div class="date-strip-label" id="offScope">—</div><div class="date-strip-val" id="offRoleLabel">—</div></div>
@@ -166,44 +151,30 @@
       </div>
     </div>
 
-    <ul class="nav seg seg-wide seg-4" role="tablist">
-      <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#offOverview" type="button"><i class="bi bi-speedometer2"></i><span>आढावा</span></button></li>
+    <ul class="nav seg seg-wide seg-5" role="tablist">
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#offFeed" type="button" id="tabOffFeed"><i class="bi bi-broadcast"></i><span>फीड</span></button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#offOverview" type="button"><i class="bi bi-speedometer2"></i><span>आढावा</span></button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#offMap" type="button" id="tabMap"><i class="bi bi-map"></i><span>नकाशा</span></button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#offTeam" type="button" id="tabTeam"><i class="bi bi-people"></i><span>अधिकारी</span></button></li>
       <li class="nav-item" id="tabAdminItem" style="display:none;"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#offAdmin" type="button" id="tabAdmin"><i class="bi bi-gear"></i><span>अ‍ॅडमिन</span></button></li>
     </ul>
 
     <div class="tab-content">
-      <!-- आढावा -->
-      <div class="tab-pane fade show active" id="offOverview">
-        <div class="kpi-grid" id="kpiGrid"><div class="loading">डॅशबोर्ड लोड होत आहे…</div></div>
-        <div class="trend-card" id="trendCard" style="display:none;">
-          <div class="trend-head"><span>मागील ७ दिवसांचे रिपोर्टिंग %</span><span id="trendAvg"></span></div>
-          <div class="trend-bars" id="trendBars"></div>
-        </div>
-        <div id="redSection"></div>
-        <div id="pendingSection"></div>
-        <div id="breakdownSection"></div>
+      <div class="tab-pane fade show active" id="offFeed"><div id="feedListOff"><div class="loading">फीड लोड होत आहे…</div></div></div>
+      
+      <div class="tab-pane fade" id="offOverview">
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="trend-card" id="trendCard" style="display:none;"><div class="trend-head"><span>मागील ७ दिवसांचे रिपोर्टिंग %</span><span id="trendAvg"></span></div><div class="trend-bars" id="trendBars"></div></div>
+        <div id="redSection"></div><div id="pendingSection"></div><div id="breakdownSection"></div>
       </div>
 
-      <!-- नकाशा -->
       <div class="tab-pane fade" id="offMap">
-        <div class="map-toolbar">
-          <select id="mapAgency" class="form-select form-select-sm"><option value="">सर्व एजन्सी</option></select>
-          <select id="mapTaluka" class="form-select form-select-sm"><option value="">सर्व तालुके</option></select>
-          <select id="mapStatus" class="form-select form-select-sm"><option value="">सर्व स्थिती</option><option value="ILLEGAL_PUMPING">🔴 उपसा</option><option value="ACTION_TAKEN">🟡 कारवाई</option><option value="SAFE">🟢 सुरक्षित</option><option value="NOT_REPORTED">⚪ नोंद नाही</option></select>
-          <button class="btn btn-sm btn-earth" id="mapLayerBtn" title="नकाशा / सॅटेलाइट"><i class="bi bi-layers"></i></button>
-        </div>
+        <div class="map-toolbar"><select id="mapAgency" class="form-select form-select-sm"><option value="">सर्व एजन्सी</option></select><select id="mapTaluka" class="form-select form-select-sm"><option value="">सर्व तालुके</option></select><select id="mapStatus" class="form-select form-select-sm"><option value="">सर्व स्थिती</option><option value="ILLEGAL_PUMPING">🔴 उपसा</option><option value="ACTION_TAKEN">🟡 कारवाई</option><option value="SAFE">🟢 सुरक्षित</option></select><button class="btn btn-sm btn-earth" id="mapLayerBtn"><i class="bi bi-layers"></i></button></div>
         <div id="leafletMap" class="leaflet-map"></div>
-        <div class="map-legend"><span><i class="dot dot-green"></i>सुरक्षित</span><span><i class="dot dot-red"></i>उपसा</span><span><i class="dot dot-yellow"></i>कारवाई</span><span><i class="dot dot-grey"></i>नोंद नाही</span><span id="mapNoLoc" class="ms-auto"></span></div>
       </div>
 
-      <!-- अधिकारी -->
-      <div class="tab-pane fade" id="offTeam">
-        <div id="teamList"><div class="loading">लोड होत आहे…</div></div>
-      </div>
+      <div class="tab-pane fade" id="offTeam"><div id="teamList"></div></div>
 
-      <!-- अ‍ॅडमिन -->
       <div class="tab-pane fade" id="offAdmin">
         <ul class="nav seg mb-2" role="tablist">
           <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#admUsers" type="button">युजर्स</button></li>
@@ -211,70 +182,38 @@
           <li class="nav-item" id="admSettingsTab"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#admSettings" type="button">सेटिंग्ज</button></li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane fade show active" id="admUsers"><input id="admUserSearch" class="form-control form-control-sm mb-2" placeholder="नाव / ID / मोबाईल शोधा"><div id="admUserList"></div></div>
-          <div class="tab-pane fade" id="admWbs"><input id="admWbSearch" class="form-control form-control-sm mb-2" placeholder="जलसाठा / प्रकल्प / गाव शोधा"><div id="admWbList"></div></div>
+          <div class="tab-pane fade show active" id="admUsers"><input id="admUserSearch" class="form-control form-control-sm mb-2" placeholder="शोधा"><div id="admUserList"></div></div>
+          <div class="tab-pane fade" id="admWbs"><input id="admWbSearch" class="form-control form-control-sm mb-2" placeholder="शोधा"><div id="admWbList"></div></div>
           <div class="tab-pane fade" id="admSettings"><div id="admSettingsList"></div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <footer class="app-footer credit" id="appFooter" style="display:none;">JAL-NETRA v<span class="appVersion2"></span> · जिल्हाधिकारी कार्यालय, वाशिम<br>© 2026 · App designed &amp; developed by Abhijit Deogirkar, Agriculture Development Officer, Washim</footer>
+  <footer class="app-footer credit" id="appFooter" style="display:none;">JAL-NETRA v<span class="appVersion2"></span> · जिल्हाधिकारी कार्यालय, वाशिम</footer>
 </div>
 
-<!-- ═══════════════ ENTRY FORM (full-screen sheet) ═══════════════ -->
+<!-- ENTRY FORM -->
 <div id="entrySheet" class="sheet" style="display:none;">
-  <div class="sheet-head">
-    <button class="btn-icon" id="entryClose"><i class="bi bi-arrow-left"></i></button>
-    <div><div class="sheet-title" id="entryWbName">—</div><div class="sheet-sub" id="entryWbMeta">—</div></div>
-  </div>
+  <div class="sheet-head"><button class="btn-icon" id="entryClose"><i class="bi bi-arrow-left"></i></button><div><div class="sheet-title" id="entryWbName">—</div><div class="sheet-sub" id="entryWbMeta">—</div></div></div>
   <form id="entryForm" class="sheet-body">
-    <div class="field">
-      <div class="field-label">आजची स्थिती</div>
-      <div class="status-grid">
-        <label class="status-opt st-safe"><input type="radio" name="status" value="SAFE" required><span><i class="bi bi-shield-check"></i>सुरक्षित<small>उपसा नाही</small></span></label>
-        <label class="status-opt st-red"><input type="radio" name="status" value="ILLEGAL_PUMPING"><span><i class="bi bi-exclamation-triangle"></i>बेकायदेशीर उपसा<small>आढळला</small></span></label>
-        <label class="status-opt st-yellow"><input type="radio" name="status" value="ACTION_TAKEN"><span><i class="bi bi-hammer"></i>कारवाई केली<small>उपसा थांबवला</small></span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label" for="entryRemark">शेरा</label>
-      <textarea id="entryRemark" class="form-control" rows="2" maxlength="300" placeholder="उदा. जलसाठा परिसर शांत, कोणताही पंप आढळला नाही" required></textarea>
-    </div>
-    <div class="field" id="actionField" style="display:none;">
-      <label class="field-label" for="entryAction">कारवाईचा तपशील</label>
-      <textarea id="entryAction" class="form-control" rows="2" maxlength="300" placeholder="उदा. २ विद्युत पंप जप्त, पंचनामा केला, तलाठ्यांना कळवले"></textarea>
-    </div>
-    <div class="field">
-      <div class="field-label">स्थळाचे GPS</div>
-      <div class="gps-box" id="gpsBox">
-        <button type="button" class="btn btn-earth w-100" id="btnGps"><i class="bi bi-geo-alt"></i> लोकेशन मिळवा</button>
-        <div class="gps-msg" id="gpsMsg"></div>
-      </div>
-    </div>
-    <div class="field">
-      <div class="field-label">स्थळाचा फोटो (कॅमेरा)</div>
-      <input type="file" id="photoInput" accept="image/*" capture="environment" hidden>
-      <button type="button" class="btn btn-water w-100" id="btnPhoto"><i class="bi bi-camera"></i> फोटो काढा</button>
-      <div class="photo-preview" id="photoPreview" style="display:none;"><img id="photoImg" alt="फोटो प्रिव्ह्यू"><button type="button" class="btn btn-sm btn-light" id="btnRetake">पुन्हा काढा</button></div>
-    </div>
+    <div class="field"><div class="field-label">आजची स्थिती</div><div class="status-grid">
+      <label class="status-opt st-safe"><input type="radio" name="status" value="SAFE" required><span><i class="bi bi-shield-check"></i>सुरक्षित<small>उपसा नाही</small></span></label>
+      <label class="status-opt st-red"><input type="radio" name="status" value="ILLEGAL_PUMPING"><span><i class="bi bi-exclamation-triangle"></i>बेकायदेशीर उपसा</span></label>
+      <label class="status-opt st-yellow"><input type="radio" name="status" value="ACTION_TAKEN"><span><i class="bi bi-hammer"></i>कारवाई केली</span></label>
+    </div></div>
+    <div class="field"><label class="field-label" for="entryRemark">शेरा</label><textarea id="entryRemark" class="form-control" rows="2" maxlength="300" required></textarea></div>
+    <div class="field" id="actionField" style="display:none;"><label class="field-label" for="entryAction">कारवाईचा तपशील</label><textarea id="entryAction" class="form-control" rows="2" maxlength="300"></textarea></div>
+    <div class="field"><div class="field-label">स्थळाचे GPS</div><div class="gps-box" id="gpsBox"><button type="button" class="btn btn-earth w-100" id="btnGps"><i class="bi bi-geo-alt"></i> लोकेशन मिळवा</button><div class="gps-msg" id="gpsMsg"></div></div></div>
+    <div class="field"><div class="field-label">स्थळाचा फोटो (कॅमेरा)</div><input type="file" id="photoInput" accept="image/*" capture="environment" hidden><button type="button" class="btn btn-water w-100" id="btnPhoto"><i class="bi bi-camera"></i> फोटो काढा</button><div class="photo-preview" id="photoPreview" style="display:none;"><img id="photoImg" alt=""><button type="button" class="btn btn-sm btn-light" id="btnRetake">पुन्हा काढा</button></div></div>
     <button type="submit" class="btn btn-submit w-100" id="entrySubmit">नोंद सेव्ह करा</button>
   </form>
-</div>
-
-<!-- A2HS बॅनर -->
-<div id="installBanner" class="install-banner" style="display:none;">
-  <img src="icons/icon-192.png" alt="" class="jn-logo">
-  <div class="flex-grow-1"><strong>अ‍ॅप इन्स्टॉल करा</strong><br><small>होम स्क्रीनवरून एका टॅपमध्ये उघडा</small></div>
-  <button class="btn btn-sm btn-water" id="installBtn">इन्स्टॉल</button>
-  <button class="btn-icon" id="installClose"><i class="bi bi-x-lg"></i></button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="config.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<!-- 🔹 आधी app.js आणि मग officer.js हाच क्रम हवा -->
 <script src="app.js"></script>
 <script src="officer.js"></script>
 </body>
