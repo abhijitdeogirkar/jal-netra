@@ -209,7 +209,37 @@
   async function saveOffline(q) { try { await qPut(q); await Swal.fire({ icon: "info", title: "मोबाईलमध्ये सेव्ह झाले", text: "रेंजमध्ये आल्यावर आता पाठवा दाबा." }); closeEntry(); history.replaceState(null, ""); await refreshOfflineBanner(); renderWaterBodies(); } catch (e) { Swal.fire("त्रुटी", "मेमरी फुल", "error"); } }
   async function refreshOfflineBanner() { let items = []; try { items = await qAll(); } catch (e) {} window.__jnQueueWbIds = {}; items.forEach((i) => { window.__jnQueueWbIds[i.payload.wbId] = true; }); $("offlineBanner").style.display = items.length ? "" : "none"; $("offlineCount").textContent = items.length; $("btnSyncNow").disabled = !navigator.onLine; }
   $("btnSyncNow").addEventListener("click", async () => { const items = await qAll(); if (!items.length) return; let ok = 0, fail = 0; for (const q of items) { busy(`पाठवत आहे… ${ok + fail + 1}/${items.length}`); try { let r = await api("submitDailyLog", { payload: q.payload }); if (r.success) { await qDel(q.id); ok++; } else { fail++; } } catch (e) { fail++; } } Swal.close(); await refreshOfflineBanner(); await loadWaterBodies(); Swal.fire("पूर्ण झाले", `${ok} यशस्वी, ${fail} राहिले`, fail ? "warning" : "success"); });
-
+// 🔹 कॅलेंडरचा जुना कोड परत जोडला
+  function fillCalFilter() { const sel = $("calWbFilter"); if(sel) { sel.innerHTML = '<option value="">सर्व जलसाठे</option>' + state.waterBodies.map((w) => `<option value="${w.wbId}">${w.name}</option>`).join(""); } }
+  $("calWbFilter").addEventListener("change", (e) => { state.cal.wbId = e.target.value; loadCalendar(); }); 
+  $("calPrev").addEventListener("click", () => { state.cal.month--; if (state.cal.month < 1) { state.cal.month = 12; state.cal.year--; } loadCalendar(); }); 
+  $("calNext").addEventListener("click", () => { state.cal.month++; if (state.cal.month > 12) { state.cal.month = 1; state.cal.year++; } loadCalendar(); }); 
+  $("tabCal").addEventListener("shown.bs.tab", loadCalendar);
+  
+  async function loadCalendar() { 
+    const { year, month, wbId } = state.cal; 
+    $("calTitle").textContent = `${MONTHS_MR[month - 1]} ${year}`; 
+    const grid = $("calGrid"); 
+    grid.innerHTML = DOW_MR.map((d) => `<div class="cal-dow">${d}</div>`).join("") + '<div class="loading" style="grid-column:1/-1">लोड होत आहे…</div>'; 
+    let days = {}, stats = { reportedDays: 0, redDays: 0 }; 
+    try { const r = await api("getInspectorCalendar", { year, month, wbId }); if (r.success) { days = r.days; stats = r; } } catch (e) {} 
+    const first = new Date(year, month - 1, 1).getDay(), dim = new Date(year, month, 0).getDate(), today = todayStr(); 
+    let html = DOW_MR.map((d) => `<div class="cal-dow">${d}</div>`).join(""); 
+    for (let i = 0; i < first; i++) html += '<div class="cal-day empty-cell"></div>'; 
+    for (let d = 1; d <= dim; d++) { 
+       const ymd = `${year}-${String(month).padStart(2, "0")}-${String(d).padStart(2, "0")}`; 
+       const info = days[ymd]; const future = ymd > today; 
+       let cls = "cal-day" + (ymd === today ? " today" : "") + (future ? " future" : ""); 
+       if (info) cls += " " + info.status + (info.photo ? " has-photo" : ""); 
+       html += `<div class="${cls}" data-ymd="${ymd}">${d}</div>`; 
+    } 
+    grid.innerHTML = html; 
+    grid.querySelectorAll(".cal-day[data-ymd]").forEach((el) => el.addEventListener("click", () => { 
+       const info = days[el.dataset.ymd]; if (!info || info.status === "NOT_REPORTED") return; 
+       Swal.fire({ title: fmtMr(el.dataset.ymd), html: `<b>${STATUS_MR[info.status]}</b>${info.photo ? `<br><img src="${info.photo}" style="max-width:100%;border-radius:12px;margin-top:10px">` : ""}`, confirmButtonText: "बंद" }); 
+    })); 
+    $("calStats").innerHTML = `<div>नोंद: <b>${stats.reportedDays || 0}</b> दिवस</div><div>उपसा: <b style="color:#c1292e">${stats.redDays || 0}</b> दिवस</div>`; 
+  }
   
   // 🔹 FORCE PWA INSTALL LOGIC
   window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); state.deferredInstall = e; });
