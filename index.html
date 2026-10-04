@@ -111,43 +111,41 @@
     </div>
   </section>
 
-  <!-- INSPECTOR HOME -->
+ <!-- INSPECTOR HOME -->
   <section id="screenInspector" class="screen" style="display:none;">
     <div id="offlineBanner" class="offline-banner" style="display:none;">
       <div><strong id="offlineCount">0</strong> नोंदी पाठवायच्या बाकी.</div>
       <button class="btn btn-sm btn-light fw-bold" id="btnSyncNow"><i class="bi bi-cloud-upload"></i> आता पाठवा</button>
     </div>
 
-    <div class="date-strip">
-      <div><div class="date-strip-label">आजची तारीख</div><div class="date-strip-val" id="todayLabel">—</div></div>
-      <div class="text-end d-flex align-items-center gap-2"><div><div class="date-strip-label">आज नोंद केलेले</div><div class="date-strip-val"><span id="todayDone">0</span>/<span id="todayTotal">0</span></div></div><button class="btn-icon" id="btnRefresh" title="रिफ्रेश"><i class="bi bi-arrow-clockwise"></i></button></div>
+    <div id="desktopGuard" class="alert-earth" style="display:none;">
+      <i class="bi bi-phone"></i> दैनिक नोंद फक्त मोबाईलवरून करता येते. कृपया हे अ‍ॅप मोबाईलवर उघडा.
     </div>
 
+    <!-- 🔹 नवीन: निळ्या कार्डमधील < तारीख > व्यवस्था -->
+    <div class="date-strip">
+      <div class="d-flex align-items-center gap-1">
+        <button class="btn-icon" id="dashPrevIns" style="color:#fff"><i class="bi bi-chevron-left"></i></button>
+        <input type="date" id="dashDateIns" class="date-pick-white">
+        <button class="btn-icon" id="dashNextIns" style="color:#fff"><i class="bi bi-chevron-right"></i></button>
+      </div>
+      <div class="text-end d-flex align-items-center gap-2">
+        <div><div class="date-strip-label" id="todayDoneLbl">आज नोंद केलेले</div><div class="date-strip-val"><span id="todayDone">0</span>/<span id="todayTotal">0</span></div></div>
+        <button class="btn-icon" id="btnRefresh" title="रिफ्रेश" style="color:#fff"><i class="bi bi-arrow-clockwise"></i></button>
+      </div>
+    </div>
+
+    <!-- 🔹 कॅलेंडर काढून फक्त २ टॅब ठेवले -->
     <ul class="nav seg seg-wide" role="tablist">
       <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#paneFeedIns" type="button" id="tabFeedIns"><i class="bi bi-broadcast"></i> लाईव्ह फीड</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#paneWB" type="button"><i class="bi bi-droplet-half"></i> माझे जलसाठे</button></li>
-      <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#paneCal" type="button" id="tabCal"><i class="bi bi-calendar3"></i> कॅलेंडर</button></li>
     </ul>
 
     <div class="tab-content">
-    <div class="tab-pane fade show active" id="paneFeedIns">
-        <div class="feed-header">
-           <button class="btn-icon" id="feedPrevIns"><i class="bi bi-chevron-left"></i></button>
-           <input type="date" id="feedDateIns" class="date-pick">
-           <button class="btn-icon" id="feedNextIns"><i class="bi bi-chevron-right"></i></button>
-        </div>
-        <div id="feedListIns"><div class="loading">फीड लोड होत आहे…</div></div>
-      </div>
+      <div class="tab-pane fade show active" id="paneFeedIns"><div id="feedListIns"><div class="loading">फीड लोड होत आहे…</div></div></div>
       <div class="tab-pane fade" id="paneWB"><div id="wbList" class="wb-list"></div></div>
-      <div class="tab-pane fade" id="paneCal">
-        <div class="cal-head"><button class="btn-icon" id="calPrev"><i class="bi bi-chevron-left"></i></button><div class="cal-title" id="calTitle">—</div><button class="btn-icon" id="calNext"><i class="bi bi-chevron-right"></i></button></div>
-        <select id="calWbFilter" class="form-select form-select-sm mb-2"><option value="">सर्व जलसाठे</option></select>
-        <div class="cal-grid" id="calGrid"></div>
-        <div class="cal-stats" id="calStats"></div>
-      </div>
     </div>
   </section>
-
   <!-- OFFICER DASHBOARD -->
   <section id="screenOfficer" class="screen" style="display:none;">
     <div class="date-strip">
