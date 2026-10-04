@@ -87,6 +87,17 @@
 
   $("btnRefresh").addEventListener("click", () => { toast("info", "रिफ्रेश होत आहे…"); loadInspectorData(); });
   
+ // 🔹 तारखा पुढे-मागे करण्यासाठी नवीन सुरक्षित फंक्शन
+  function addDays(ymd, days) {
+    const d = new Date(ymd);
+    d.setDate(d.getDate() + days);
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  let currentInsDate = todayStr();
+
+  $("btnRefresh").addEventListener("click", () => { toast("info", "रिफ्रेश होत आहे…"); loadInspectorData(); });
+  
   async function initInspector() { 
     $("desktopGuard").style.display = isMobileDevice() ? "none" : ""; 
     await refreshOfflineBanner(); 
@@ -95,8 +106,20 @@
     if(fDate) {
        fDate.value = currentInsDate; fDate.max = todayStr();
        fDate.addEventListener("change", () => { currentInsDate = fDate.value; loadInspectorData(); });
-       $("dashPrevIns").addEventListener("click", () => { let d = new Date(currentInsDate); d.setDate(d.getDate() - 1); currentInsDate = fmtDate(d); fDate.value = currentInsDate; loadInspectorData(); });
-       $("dashNextIns").addEventListener("click", () => { let d = new Date(currentInsDate); d.setDate(d.getDate() + 1); if(fmtDate(d) <= todayStr()) { currentInsDate = fmtDate(d); fDate.value = currentInsDate; loadInspectorData(); } });
+       
+       // 🔹 बाणांचा कोड दुरुस्त केला
+       $("dashPrevIns").addEventListener("click", () => { 
+          currentInsDate = addDays(currentInsDate, -1); 
+          fDate.value = currentInsDate; 
+          loadInspectorData(); 
+       });
+       $("dashNextIns").addEventListener("click", () => { 
+          if(currentInsDate < todayStr()) { 
+             currentInsDate = addDays(currentInsDate, 1); 
+             fDate.value = currentInsDate; 
+             loadInspectorData(); 
+          } 
+       });
     }
     
     $("tabFeedIns").addEventListener("shown.bs.tab", () => window.JN.loadLiveFeed("feedListIns", currentInsDate)); 
@@ -109,6 +132,20 @@
     await loadWaterBodies();
   }
 
+  async function loadWaterBodies(isRetry) {
+    const list = $("wbList"); if (!isRetry) list.innerHTML = '<div class="loading"><span class="spinner-border spinner-border-sm"></span> जलसाठे लोड होत आहेत…</div>';
+    try {
+      const r = await api("getMyWaterBodies", { date: currentInsDate }); if (!r.success) { list.innerHTML = `<div class="empty">${r.message}</div>`; return; }
+      state.waterBodies = r.waterBodies || [];
+      if (!state.waterBodies.length && !isRetry) { list.innerHTML = '<div class="loading">पुन्हा तपासत आहे…</div>'; await new Promise((res) => setTimeout(res, 2000)); return loadWaterBodies(true); }
+      store.set("jn_wbs", JSON.stringify(state.waterBodies));
+    } catch (e) {
+      const cached = store.get("jn_wbs"); state.waterBodies = cached ? JSON.parse(cached) : [];
+      if (!state.waterBodies.length) { list.innerHTML = `<div class="empty">इंटरनेट नाही आणि जुनी यादीही नाही.</div>`; return; } toast("warning", "ऑफलाइन — शेवटची यादी दाखवत आहे");
+    }
+    renderWaterBodies(); 
+    fillCalFilter(); // 🔹 कॅलेंडर फिल्टर अपडेट करणे
+  }
   async function loadWaterBodies(isRetry) {
     const list = $("wbList"); if (!isRetry) list.innerHTML = '<div class="loading"><span class="spinner-border spinner-border-sm"></span> जलसाठे लोड होत आहेत…</div>';
     try {
