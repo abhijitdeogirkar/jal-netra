@@ -280,3 +280,10 @@ button, input, select, textarea { font-family: inherit; }
 .fs-SAFE { background: #e3f1e4; color: var(--safe); }
 .fs-ILLEGAL_PUMPING { background: #fbe3e4; color: var(--alert); }
 .fs-ACTION_TAKEN { background: #fff3cc; color: #8a6400; }
+
+/* ═══════════════ सूचना फलक (Chalkboard) ═══════════════ */
+.chalkboard-wrap { margin: 0 0 16px 0; border: 8px solid #c48b55; border-radius: 6px; background: linear-gradient(135deg, #285d34 0%, #1e4526 100%); box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.6); color: #fff; position: relative; }
+.chalkboard-wrap::before { content: ""; position: absolute; inset: 0; border: 2px solid #8b5a2b; pointer-events: none; }
+.chalk-header { background: rgba(0,0,0,0.15); padding: 6px 12px; font-size: 13.5px; font-weight: 700; color: #ffeb3b; display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.2); }
+.chalk-body { padding: 16px 12px; font-family: 'Mukta', sans-serif; font-size: 16px; font-weight: 500; line-height: 1.5; color: rgba(255,255,255,0.95); text-shadow: 1px 1px 2px rgba(0,0,0,0.5); white-space: pre-wrap; }
+.chalk-empty { padding: 6px 12px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.6); text-align: center; }
