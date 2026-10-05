@@ -1,5 +1,5 @@
 /* =============================================================================
-   🌊 JAL-NETRA — officer.js (टप्पा ३.२ - Officer Dashboard)
+   🌊 JAL-NETRA — officer.js (Notice Board Update)
    ============================================================================= */
 (function () {
   "use strict";
@@ -11,7 +11,6 @@
   
   const O = { date: todayStr(), dash: null, map: null, layer: null, satellite: false, markers: [], mapData: null, team: null, users: null, wbs: null, inited: false };
 
-  // 🔹 तारखा बदलण्यासाठी सुरक्षित फंक्शन्स
   const formatYMD = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   const addDays = (ymd, days) => { const d = new Date(ymd); d.setDate(d.getDate() + days); return formatYMD(d); };
 
@@ -24,26 +23,23 @@
     if (!O.inited) {
       O.inited = true;
       
-      // 🔹 १. मुख्य डॅशबोर्डची तारीख व्यवस्था
       const oDate = $("offDate");
       if(oDate) {
          oDate.value = O.date; oDate.max = todayStr();
          oDate.addEventListener("change", () => { O.date = oDate.value || todayStr(); loadDashboard(); if (O.map) loadMap(); });
       }
 
-      // 🔹 २. रिफ्रेश बटन
       const btnRef = $("offRefresh");
       if(btnRef) {
          btnRef.addEventListener("click", () => { 
             toast("info", "रिफ्रेश होत आहे…"); 
-            loadDashboard(); 
-            if (O.map) loadMap(); 
+            loadDashboard(); if (O.map) loadMap(); 
             if($("feedDateOff")) window.JN.loadLiveFeed("feedListOff", $("feedDateOff").value); 
+            window.JN.loadPublicSettings(); // 🔹 सूचना रिफ्रेश करा
             O.team = null; 
          });
       }
       
-      // 🔹 ३. फीडची तारीख व बाण (Arrows)
       const fDate = $("feedDateOff");
       if(fDate) {
          fDate.value = todayStr(); fDate.max = todayStr();
@@ -52,53 +48,57 @@
          $("feedNextOff").addEventListener("click", () => { if(fDate.value < todayStr()) { fDate.value = addDays(fDate.value, 1); window.JN.loadLiveFeed("feedListOff", fDate.value); } });
       }
 
-      // 🔹 ४. टॅब्स जोडणी (बटणे ॲक्टिव्हेट करणे)
       if($("tabOffFeed")) $("tabOffFeed").addEventListener("shown.bs.tab", () => { if(fDate) window.JN.loadLiveFeed("feedListOff", fDate.value); });
       if($("tabMap")) $("tabMap").addEventListener("shown.bs.tab", () => { ensureMap(); loadMap(); });
       if($("tabTeam")) $("tabTeam").addEventListener("shown.bs.tab", loadTeam);
       if($("tabAdmin")) $("tabAdmin").addEventListener("shown.bs.tab", loadAdmin);
       
-      // 🔹 ५. नकाशा आणि अ‍ॅडमिन फिल्टर्स
       ["mapAgency", "mapTaluka", "mapStatus"].forEach((id) => { if($(id))$(id).addEventListener("change", renderMarkers); });
       if($("mapLayerBtn")) $("mapLayerBtn").addEventListener("click", toggleLayer);
       if($("admUserSearch")) $("admUserSearch").addEventListener("input", renderUsers); 
       if($("admWbSearch")) $("admWbSearch").addEventListener("input", renderWbs);
     }
 
-    // 🔹 ६. भूमिका आणि अधिकार तपासणी
     if($("offRoleLabel")) $("offRoleLabel").textContent = roleLabel(state.user.role);
-    const isCell = state.user.role === "DISTRICT_CELL" || state.user.role === "COLLECTOR";
-    if($("tabAdminItem")) $("tabAdminItem").style.display = (isCell || state.user.role === "AGENCY_HEAD" || state.user.role === "TALUKA_MONITOR") ? "" : "none";
-    if($("admSettingsTab")) $("admSettingsTab").style.display = (state.user.role === "DISTRICT_CELL") ? "" : "none";
+    const isCellOrColl = state.user.role === "DISTRICT_CELL" || state.user.role === "COLLECTOR";
+    if($("tabAdminItem")) $("tabAdminItem").style.display = (isCellOrColl || state.user.role === "AGENCY_HEAD" || state.user.role === "TALUKA_MONITOR") ? "" : "none";
+    if($("admSettingsTab")) $("admSettingsTab").style.display = isCellOrColl ? "" : "none";
     
-    // 🔹 ७. माहिती लोड करणे
+    // 🔹 सूचना फलक कंट्रोल (फक्त जिल्हाधिकारी व सेलसाठी)
+    if(isCellOrColl && $("noticeEditCard")) {
+        $("noticeEditCard").style.display = "flex";
+        $("admNoticeText").value = state.settings?.collectorNotice || "";
+        
+        $("btnSaveNotice").onclick = async () => {
+           const txt = $("admNoticeText").value.trim();
+           if(!txt) return toast("warning", "काहीतरी टाईप करा!");
+           busy("सेव्ह होत आहे...");
+           const r = await api("admin_saveNotice", { text: txt }); Swal.close();
+           if(r.success) { toast("success", r.message); window.JN.loadPublicSettings(); } else { Swal.fire("त्रुटी", r.message, "error"); }
+        };
+        
+        $("btnClearNotice").onclick = async () => {
+           const c = await Swal.fire({title:"सूचना काढायची?", icon:"warning", showCancelButton:true, confirmButtonText:"काढा"});
+           if(c.isConfirmed) {
+              busy("काढत आहे...");
+              const r = await api("admin_saveNotice", { text: "" }); Swal.close();
+              if(r.success) { $("admNoticeText").value = ""; toast("info", r.message); window.JN.loadPublicSettings(); }
+           }
+        };
+    }
+
     if($("feedDateOff")) window.JN.loadLiveFeed("feedListOff", $("feedDateOff").value || todayStr());
-    loadDashboard(); 
-    loadTrend();
+    loadDashboard(); loadTrend();
   }
 
   async function loadDashboard() {
-    const grid = $("kpiGrid"); if(!grid) return;
-    grid.innerHTML = '<div class="loading"><span class="spinner-border spinner-border-sm"></span> डॅशबोर्ड लोड होत आहे…</div>';
-    try { 
-        const r = await api("getMonitorDashboard", { date: O.date }); 
-        if (!r.success) { grid.innerHTML = `<div class="empty">${esc(r.message)}</div>`; return; } 
-        O.dash = r; 
-        if($("offScope")) $("offScope").textContent = r.scopeLabel; 
-        renderKpi(r); renderRed(r); renderPending(r); renderBreakdown(r); 
-    } catch (e) { grid.innerHTML = `<div class="empty">नेटवर्क त्रुटी</div>`; }
+    const grid = $("kpiGrid"); if(!grid) return; grid.innerHTML = '<div class="loading"><span class="spinner-border spinner-border-sm"></span> डॅशबोर्ड लोड होत आहे…</div>';
+    try { const r = await api("getMonitorDashboard", { date: O.date }); if (!r.success) { grid.innerHTML = `<div class="empty">${esc(r.message)}</div>`; return; } O.dash = r; if($("offScope")) $("offScope").textContent = r.scopeLabel; renderKpi(r); renderRed(r); renderPending(r); renderBreakdown(r); } catch (e) { grid.innerHTML = `<div class="empty">नेटवर्क त्रुटी</div>`; }
   }
 
   function renderKpi(r) {
-    const k = r.kpi, dateLbl = r.isToday ? "आज" : fmtMr(r.date);
-    const grid = $("kpiGrid"); if(!grid) return;
-    grid.innerHTML = `
-      <div class="kpi kpi-main"><div class="kpi-val">${k.reportedPct}%</div><div class="kpi-lbl">${dateLbl} तपासणी<br><small>${k.reported} / ${k.total} जलसाठे</small></div><div class="kpi-bar"><i style="width:${k.reportedPct}%"></i></div></div>
-      <div class="kpi kpi-main" style="border-top-color:#1b998b"><div class="kpi-val">${k.installedUsers || 0}/${k.totalUsers || 0}</div><div class="kpi-lbl">तुमच्या अधिकाऱ्यांचे<br>ॲप इन्स्टॉलेशन्स</div></div>
-      <div class="kpi kpi-red"><div class="kpi-val">${k.red}</div><div class="kpi-lbl">उपसा</div></div>
-      <div class="kpi kpi-grey"><div class="kpi-val">${k.pending}</div><div class="kpi-lbl">नोंद बाकी</div></div>
-      <div class="kpi kpi-yellow"><div class="kpi-val">${k.yellow}</div><div class="kpi-lbl">कारवाई</div></div>
-      <div class="kpi kpi-green"><div class="kpi-val">${k.safe}</div><div class="kpi-lbl">सुरक्षित</div></div>`;
+    const k = r.kpi, dateLbl = r.isToday ? "आज" : fmtMr(r.date); const grid = $("kpiGrid"); if(!grid) return;
+    grid.innerHTML = `<div class="kpi kpi-main"><div class="kpi-val">${k.reportedPct}%</div><div class="kpi-lbl">${dateLbl} तपासणी<br><small>${k.reported} / ${k.total} जलसाठे</small></div><div class="kpi-bar"><i style="width:${k.reportedPct}%"></i></div></div><div class="kpi kpi-main" style="border-top-color:#1b998b"><div class="kpi-val">${k.installedUsers || 0}/${k.totalUsers || 0}</div><div class="kpi-lbl">तुमच्या अधिकाऱ्यांचे<br>ॲप इन्स्टॉलेशन्स</div></div><div class="kpi kpi-red"><div class="kpi-val">${k.red}</div><div class="kpi-lbl">उपसा</div></div><div class="kpi kpi-grey"><div class="kpi-val">${k.pending}</div><div class="kpi-lbl">नोंद बाकी</div></div><div class="kpi kpi-yellow"><div class="kpi-val">${k.yellow}</div><div class="kpi-lbl">कारवाई</div></div><div class="kpi kpi-green"><div class="kpi-val">${k.safe}</div><div class="kpi-lbl">सुरक्षित</div></div>`;
   }
 
   function wbCard(it, cls) { return `<div class="rcard ${cls}"><div class="rcard-top"><div><div class="rcard-name">${ICON[it.status] || ""} ${esc(it.name)}</div><div class="rcard-meta">${esc(it.project)} · ${esc(it.talukaMr)}</div></div></div>${it.remark ? `<div class="rcard-remark">“${esc(it.remark)}”</div>` : ""}${it.action ? `<div class="rcard-remark"><b>कारवाई:</b> ${esc(it.action)}</div>` : ""}<div class="rcard-foot"><span><i class="bi bi-person"></i> ${it.inspectors && it.inspectors.length ? esc(it.inspectors[0].name) : "निरीक्षक नाही"}</span><button class="btn btn-sm btn-link p-0" data-hist="${esc(it.wbId)}">इतिहास</button></div></div>`; }
