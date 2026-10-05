@@ -8,7 +8,6 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="JAL-NETRA">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -22,7 +21,6 @@
 </head>
 <body>
 
-<!-- SPLASH -->
 <div id="splash" class="splash" aria-hidden="true">
   <div class="splash-earth"></div>
   <div class="splash-panel splash-left"></div>
@@ -35,12 +33,10 @@
     <p class="splash-tagline" id="splashTagline">दुष्काळाशी लढा, थेंबाथेंबावर पहारा</p>
     <p class="splash-sub" id="splashSubtitle">जिल्हाधिकारी कार्यालय, वाशिम</p>
   </div>
-  <div class="credit credit-light splash-credit">© 2026 · App designed &amp; developed by Abhijit Deogirkar, Agriculture Development Officer, Washim</div>
+  <div class="credit credit-light splash-credit">© 2026 · App designed &amp; developed by Abhijit Deogirkar, Washim</div>
 </div>
 
 <div id="app" class="app">
-
-  <!-- Header -->
   <header class="topbar" id="topbar" style="display:none;">
     <div class="topbar-brand">
       <img src="icons/icon-192.png" alt="" class="jn-logo">
@@ -52,47 +48,42 @@
     <button class="btn-icon" id="btnLogout" title="लॉगआउट"><i class="bi bi-box-arrow-right"></i></button>
   </header>
 
-  <!-- LOGIN -->
   <section id="screenLogin" class="screen screen-earth">
     <div class="login-card">
       <div class="login-head">
         <img src="icons/icon-192.png" alt="" class="login-logo jn-logo">
         <div>
           <div class="login-brand">JAL-NETRA <span>जलनेत्र</span></div>
-          <div class="login-longform">Jal — Network for Enforcement, Tracking &amp; Reporting of Abstraction</div>
           <div class="login-office">जिल्हाधिकारी कार्यालय, वाशिम</div>
         </div>
       </div>
-
       <ul class="nav nav-pills seg mb-3" role="tablist">
         <li class="nav-item"><button class="nav-link active" id="tabLogin" data-bs-toggle="pill" data-bs-target="#paneLogin" type="button">लॉगिन</button></li>
         <li class="nav-item" id="tabRegisterItem" style="display:none;"><button class="nav-link" id="tabRegister" data-bs-toggle="pill" data-bs-target="#paneRegister" type="button">नवीन नोंदणी</button></li>
       </ul>
-
       <div class="tab-content">
         <div class="tab-pane fade show active" id="paneLogin">
-          <form id="loginForm" autocomplete="on">
+          <form id="loginForm">
             <label class="form-label" for="loginId">युजर आयडी किंवा मोबाईल</label>
             <input type="text" id="loginId" class="form-control form-control-lg mb-3" placeholder="उदा. INS-WSM-001" autocapitalize="characters" required>
             <label class="form-label" for="loginPwd">पासवर्ड</label>
             <div class="input-group input-group-lg mb-4">
-              <input type="password" id="loginPwd" class="form-control" required autocomplete="current-password">
+              <input type="password" id="loginPwd" class="form-control" required>
               <button class="btn btn-outline-secondary" type="button" id="togglePwd"><i class="bi bi-eye"></i></button>
             </div>
             <button type="submit" class="btn btn-water btn-lg w-100" id="loginBtn">लॉगिन करा</button>
           </form>
         </div>
-
         <div class="tab-pane fade" id="paneRegister">
           <form id="registerForm">
             <div class="mb-2"><label class="form-label">पूर्ण नाव</label><input class="form-control" name="name" required></div>
-            <div class="mb-2"><label class="form-label">मोबाईल (१० अंकी)</label><input class="form-control" name="mobile" pattern="[0-9]{10}" required></div>
+            <div class="mb-2"><label class="form-label">मोबाईल</label><input class="form-control" name="mobile" pattern="[0-9]{10}" required></div>
             <div class="row g-2 mb-2">
               <div class="col-6"><label class="form-label">तालुका</label><select class="form-select" name="taluka" id="regTaluka" required></select></div>
               <div class="col-6"><label class="form-label">भूमिका</label><select class="form-select" name="role"><option value="INSPECTOR">निरीक्षक</option><option value="TALUKA_MONITOR">तालुका मॉनिटर</option></select></div>
             </div>
-            <div class="mb-2"><label class="form-label">एजन्सी / विभाग</label><input class="form-control" name="agency" required></div>
-            <div class="mb-3"><label class="form-label">वरिष्ठाचा ID (ऐच्छिक)</label><input class="form-control" name="reportsTo"></div>
+            <div class="mb-2"><label class="form-label">एजन्सी</label><input class="form-control" name="agency" required></div>
+            <div class="mb-3"><label class="form-label">वरिष्ठाचा ID</label><input class="form-control" name="reportsTo"></div>
             <button type="submit" class="btn btn-earth w-100">नोंदणी करा</button>
           </form>
         </div>
@@ -104,7 +95,6 @@
   <section id="screenForcePwd" class="screen screen-earth" style="display:none;">
     <div class="login-card">
       <h2 class="h5 mb-1">नवीन पासवर्ड ठेवा</h2>
-      <p class="text-muted small mb-3">पहिल्या लॉगिनला पासवर्ड बदलणे आवश्यक आहे.</p>
       <input type="password" id="newPwd1" class="form-control form-control-lg mb-2" placeholder="नवीन पासवर्ड (किमान ४ अक्षरे)">
       <input type="password" id="newPwd2" class="form-control form-control-lg mb-3" placeholder="पुन्हा टाका">
       <button class="btn btn-water btn-lg w-100" id="savePwdBtn">सेव्ह करा</button>
@@ -117,12 +107,11 @@
       <div><strong id="offlineCount">0</strong> नोंदी पाठवायच्या बाकी.</div>
       <button class="btn btn-sm btn-light fw-bold" id="btnSyncNow"><i class="bi bi-cloud-upload"></i> आता पाठवा</button>
     </div>
+    <div id="desktopGuard" class="alert-earth" style="display:none;"><i class="bi bi-phone"></i> कृपया हे अ‍ॅप मोबाईलवर उघडा.</div>
 
-    <div id="desktopGuard" class="alert-earth" style="display:none;">
-      <i class="bi bi-phone"></i> दैनिक नोंद फक्त मोबाईलवरून करता येते. कृपया हे अ‍ॅप मोबाईलवर उघडा.
-    </div>
+    <!-- 🔹 सूचना फलक -->
+    <div id="noticeIns"></div>
 
-    <!-- निळ्या कार्डमधील < तारीख > व्यवस्था -->
     <div class="date-strip">
       <div class="d-flex align-items-center gap-1">
         <button class="btn-icon" id="dashPrevIns" style="color:#fff"><i class="bi bi-chevron-left"></i></button>
@@ -135,7 +124,6 @@
       </div>
     </div>
 
-    <!-- तीनही टॅब -->
     <ul class="nav seg seg-wide" role="tablist">
       <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#paneFeedIns" type="button" id="tabFeedIns"><i class="bi bi-broadcast"></i> फीड</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#paneWB" type="button"><i class="bi bi-droplet-half"></i> माझे जलसाठे</button></li>
@@ -145,19 +133,11 @@
     <div class="tab-content">
       <div class="tab-pane fade show active" id="paneFeedIns"><div id="feedListIns"><div class="loading">फीड लोड होत आहे…</div></div></div>
       <div class="tab-pane fade" id="paneWB"><div id="wbList" class="wb-list"></div></div>
-      
-      <!-- कॅलेंडरचा भाग -->
       <div class="tab-pane fade" id="paneCal">
-        <div class="cal-head">
-          <button class="btn-icon" id="calPrev"><i class="bi bi-chevron-left"></i></button>
-          <div class="cal-title" id="calTitle">—</div>
-          <button class="btn-icon" id="calNext"><i class="bi bi-chevron-right"></i></button>
-        </div>
+        <div class="cal-head"><button class="btn-icon" id="calPrev"><i class="bi bi-chevron-left"></i></button><div class="cal-title" id="calTitle">—</div><button class="btn-icon" id="calNext"><i class="bi bi-chevron-right"></i></button></div>
         <select id="calWbFilter" class="form-select form-select-sm mb-2"><option value="">सर्व जलसाठे</option></select>
         <div class="cal-grid" id="calGrid"></div>
-        <div class="cal-legend">
-          <span><i class="dot dot-green"></i>सुरक्षित</span><span><i class="dot dot-red"></i>उपसा</span><span><i class="dot dot-yellow"></i>कारवाई</span><span><i class="dot dot-grey"></i>नोंद नाही</span>
-        </div>
+        <div class="cal-legend"><span><i class="dot dot-green"></i>सुरक्षित</span><span><i class="dot dot-red"></i>उपसा</span><span><i class="dot dot-yellow"></i>कारवाई</span></div>
         <div class="cal-stats" id="calStats"></div>
       </div>
     </div>
@@ -165,6 +145,10 @@
 
   <!-- OFFICER DASHBOARD -->
   <section id="screenOfficer" class="screen" style="display:none;">
+    
+    <!-- 🔹 सूचना फलक -->
+    <div id="noticeOff"></div>
+
     <div class="date-strip">
       <div><div class="date-strip-label" id="offScope">—</div><div class="date-strip-val" id="offRoleLabel">—</div></div>
       <div class="text-end d-flex align-items-center gap-2">
@@ -183,27 +167,19 @@
 
     <div class="tab-content">
       <div class="tab-pane fade show active" id="offFeed">
-        <div class="feed-header">
-           <button class="btn-icon" id="feedPrevOff"><i class="bi bi-chevron-left"></i></button>
-           <input type="date" id="feedDateOff" class="date-pick">
-           <button class="btn-icon" id="feedNextOff"><i class="bi bi-chevron-right"></i></button>
-        </div>
+        <div class="feed-header"><button class="btn-icon" id="feedPrevOff"><i class="bi bi-chevron-left"></i></button><input type="date" id="feedDateOff" class="date-pick"><button class="btn-icon" id="feedNextOff"><i class="bi bi-chevron-right"></i></button></div>
         <div id="feedListOff"><div class="loading">फीड लोड होत आहे…</div></div>
       </div>
-      
       <div class="tab-pane fade" id="offOverview">
         <div class="kpi-grid" id="kpiGrid"></div>
         <div class="trend-card" id="trendCard" style="display:none;"><div class="trend-head"><span>मागील ७ दिवसांचे रिपोर्टिंग %</span><span id="trendAvg"></span></div><div class="trend-bars" id="trendBars"></div></div>
         <div id="redSection"></div><div id="pendingSection"></div><div id="breakdownSection"></div>
       </div>
-
       <div class="tab-pane fade" id="offMap">
         <div class="map-toolbar"><select id="mapAgency" class="form-select form-select-sm"><option value="">सर्व एजन्सी</option></select><select id="mapTaluka" class="form-select form-select-sm"><option value="">सर्व तालुके</option></select><select id="mapStatus" class="form-select form-select-sm"><option value="">सर्व स्थिती</option><option value="ILLEGAL_PUMPING">🔴 उपसा</option><option value="ACTION_TAKEN">🟡 कारवाई</option><option value="SAFE">🟢 सुरक्षित</option></select><button class="btn btn-sm btn-earth" id="mapLayerBtn"><i class="bi bi-layers"></i></button></div>
         <div id="leafletMap" class="leaflet-map"></div>
       </div>
-
       <div class="tab-pane fade" id="offTeam"><div id="teamList"></div></div>
-
       <div class="tab-pane fade" id="offAdmin">
         <ul class="nav seg mb-2" role="tablist">
           <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#admUsers" type="button">युजर्स</button></li>
@@ -213,13 +189,25 @@
         <div class="tab-content">
           <div class="tab-pane fade show active" id="admUsers"><input id="admUserSearch" class="form-control form-control-sm mb-2" placeholder="शोधा"><div id="admUserList"></div></div>
           <div class="tab-pane fade" id="admWbs"><input id="admWbSearch" class="form-control form-control-sm mb-2" placeholder="शोधा"><div id="admWbList"></div></div>
-          <div class="tab-pane fade" id="admSettings"><div id="admSettingsList"></div></div>
+          
+          <div class="tab-pane fade" id="admSettings">
+            <!-- 🔹 नवीन: सूचना लिहिण्याचा बॉक्स -->
+            <div class="scard" id="noticeEditCard" style="display:none; flex-direction:column; align-items:stretch; background:#f0f7f4; border:1px solid #1b998b;">
+               <b style="color:#0b4f6c;"><i class="bi bi-megaphone-fill text-warning"></i> जिल्हाधिकारी सूचना फलक</b>
+               <div class="tcard-meta mb-2">येथे लिहिलेली सूचना सर्व अधिकाऱ्यांना आणि निरीक्षकांना ॲपमध्ये सर्वात वर हिरव्या फळ्यावर दिसेल.</div>
+               <textarea id="admNoticeText" class="form-control mb-2" rows="3" placeholder="येथे सूचना टाईप करा..."></textarea>
+               <div class="d-flex gap-2">
+                 <button class="btn btn-sm btn-water flex-grow-1" id="btnSaveNotice">सूचना प्रसिद्ध करा</button>
+                 <button class="btn btn-sm btn-outline-danger" id="btnClearNotice">काढून टाका</button>
+               </div>
+            </div>
+            <div id="admSettingsList"></div>
+          </div>
+
         </div>
       </div>
     </div>
   </section>
-
-  <footer class="app-footer credit" id="appFooter" style="display:none;">JAL-NETRA v<span class="appVersion2"></span> · जिल्हाधिकारी कार्यालय, वाशिम</footer>
 </div>
 
 <!-- ENTRY FORM -->
