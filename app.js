@@ -47,8 +47,8 @@
     } catch (e) {} 
   }
 
-  const roleLabel = (r) => ({ INSPECTOR: "निरीक्षक", TALUKA_MONITOR: "तालुका मॉनिटर", AGENCY_HEAD: "एजन्सी प्रमुख", DISTRICT_CELL: "जिल्हा मॉनिटरिंग सेल", COLLECTOR: "जिल्हाधिकारी" }[r] || r);
-  window.JN = { api, state, toast, busy, fmtMr, todayStr, STATUS_MR, MONTHS_MR, roleLabel, show, $, loadPublicSettings };
+  const roleLabel = (r) => ({ INSPECTOR: "Team Member", TALUKA_MONITOR: "Taluka Monitoring Officer", AGENCY_HEAD: "Agency Head", DISTRICT_CELL: "Dist. Monitoring Cell", COLLECTOR: "Hon Dist Collector", TEAM_COORD: "Team Co-ordinator", OPERATOR: "Operator" }[r] || r);
+   window.JN = { api, state, toast, busy, fmtMr, todayStr, STATUS_MR, MONTHS_MR, roleLabel, show, $, loadPublicSettings };
 
   // 🔹 सूचना फलक
   window.JN.renderNoticeBoard = function(containerId) {
@@ -84,8 +84,27 @@
     $("loginForm").addEventListener("submit", async (e) => { e.preventDefault(); const btn = $("loginBtn"); btn.disabled = true; btn.textContent = "तपासत आहे…"; try { const r = await api("login", { id: $("loginId").value.trim(), pwd: $("loginPwd").value }); if (!r.success) { Swal.fire("लॉगिन झाले नाही", r.message, "error"); return; } state.token = r.token; state.user = r.user; store.set("jn_token", r.token); store.set("jn_user", JSON.stringify(r.user)); if (r.settings) { state.settings = r.settings; } if (r.mustChangePassword) show("screenForcePwd"); else enterApp(); } catch (err) { Swal.fire("नेटवर्क त्रुटी", err.message, "error"); } finally { btn.disabled = false; btn.textContent = "लॉगिन करा"; } });
     $("togglePwd").addEventListener("click", () => { const i = $("loginPwd"), ic = $("togglePwd").querySelector("i"), showing = i.type === "text"; i.type = showing ? "password" : "text"; ic.className = showing ? "bi bi-eye" : "bi bi-eye-slash"; });
     $("savePwdBtn").addEventListener("click", async () => { const p1 = $("newPwd1").value, p2 = $("newPwd2").value; if (p1.length < 4 || p1 !== p2) return Swal.fire("तपासा", "पासवर्ड जुळत नाहीत.", "warning"); busy("सेव्ह होत आहे…"); try { const r = await api("changePassword", { newPwd: p1 }); Swal.close(); if (r.success) { toast("success", "पासवर्ड बदलला"); enterApp(); } else Swal.fire("त्रुटी", r.message, "error"); } catch (err) {} });
-    $("registerForm").addEventListener("submit", async (e) => { e.preventDefault(); const f = e.target; busy("नोंदणी होत आहे…"); try { const r = await api("register", { form: { name: f.name.value, mobile: f.mobile.value, taluka: f.taluka.value, role: f.role.value, agency: f.agency.value, reportsTo: f.reportsTo.value } }); Swal.close(); if (r.success) { Swal.fire({ icon: "success", title: "नोंदणी झाली", html: r.message }); f.reset(); $("tabLogin").click(); } else Swal.fire("त्रुटी", r.message, "error"); } catch (err) {} });
-    $("btnLogout").addEventListener("click", () => Swal.fire({ title: "लॉगआउट करायचे?", icon: "question", showCancelButton: true, confirmButtonText: "होय" }).then((r) => { if (r.isConfirmed) doLogout(); }));
+    $("registerForm").addEventListener("submit", async (e) => { 
+  e.preventDefault(); const f = e.target; busy("नोंदणी होत आहे…"); 
+  try { 
+    const r = await api("register", { 
+      form: { 
+        name: f.name.value, 
+        mobile: f.mobile.value, 
+        email: f.email.value,              // 🔹 नवीन
+        designation: f.designation.value,  // 🔹 नवीन
+        taluka: f.taluka.value, 
+        role: f.role.value, 
+        agency: f.agency.value, 
+        reportsTo: f.reportsTo.value 
+      } 
+    }); 
+    Swal.close(); 
+    if (r.success) { Swal.fire({ icon: "success", title: "नोंदणी झाली", html: r.message }); f.reset(); $("tabLogin").click(); } 
+    else Swal.fire("त्रुटी", r.message, "error"); 
+  } catch (err) {} 
+});
+     $("btnLogout").addEventListener("click", () => Swal.fire({ title: "लॉगआउट करायचे?", icon: "question", showCancelButton: true, confirmButtonText: "होय" }).then((r) => { if (r.isConfirmed) doLogout(); }));
     if (restoreSession()) enterApp(); else show("screenLogin"); setTimeout(showInstallGate, 3500);
   });
 
