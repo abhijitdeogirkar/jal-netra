@@ -74,16 +74,65 @@
             <button type="submit" class="btn btn-water btn-lg w-100" id="loginBtn">लॉगिन करा</button>
           </form>
         </div>
-        <div class="tab-pane fade" id="paneRegister">
+<div class="tab-pane fade" id="paneRegister">
           <form id="registerForm">
             <div class="mb-2"><label class="form-label">पूर्ण नाव</label><input class="form-control" name="name" required></div>
-            <div class="mb-2"><label class="form-label">मोबाईल</label><input class="form-control" name="mobile" pattern="[0-9]{10}" required></div>
+            <div class="mb-2"><label class="form-label">मोबाईल (१० अंकी)</label><input class="form-control" name="mobile" pattern="[0-9]{10}" required></div>
+            
+            <!-- 🔹 नवीन: ईमेल आयडी -->
+            <div class="mb-2"><label class="form-label">ईमेल आयडी</label><input type="email" class="form-control" name="email" required></div>
+            
+            <!-- 🔹 नवीन: पद (Designation) ड्रॉपडाऊन -->
+            <div class="mb-2"><label class="form-label">पद (Designation)</label>
+              <select class="form-select" name="designation" required>
+                <option value="">निवडा</option>
+                <option value="मा. जिल्हाधिकारी">मा. जिल्हाधिकारी</option>
+                <option value="निवासी उपजिल्हाधिकारी">निवासी उपजिल्हाधिकारी</option>
+                <option value="कार्यकारी अभियंता">कार्यकारी अभियंता</option>
+                <option value="उप अभियंता">उप अभियंता</option>
+                <option value="कनिष्ठ/ शाखा अभियंता">कनिष्ठ/ शाखा अभियंता</option>
+                <option value="शाखा अभियंता">शाखा अभियंता</option>
+                <option value="मंडळ अधिकारी">मंडळ अधिकारी</option>
+                <option value="पोलीस उप निरीक्षक">पोलीस उप निरीक्षक</option>
+                <option value="ग्रामपंचायत अधिकारी">ग्रामपंचायत अधिकारी</option>
+                <option value="जल सुरक्षक">जल सुरक्षक</option>
+              </select>
+            </div>
+
             <div class="row g-2 mb-2">
               <div class="col-6"><label class="form-label">तालुका</label><select class="form-select" name="taluka" id="regTaluka" required></select></div>
-              <div class="col-6"><label class="form-label">भूमिका</label><select class="form-select" name="role"><option value="INSPECTOR">निरीक्षक</option><option value="TALUKA_MONITOR">तालुका मॉनिटर</option></select></div>
+              
+              <!-- 🔹 अपडेटेड: भूमिका (Role) ड्रॉपडाऊन -->
+              <div class="col-6"><label class="form-label">भूमिका</label>
+                <select class="form-select" name="role" required>
+                  <option value="">निवडा</option>
+                  <option value="TEAM_COORD">Team Co-ordinator</option>
+                  <option value="INSPECTOR">Team Member</option>
+                  <option value="TALUKA_MONITOR">Taluka Monitoring Officer</option>
+                  <option value="AGENCY_HEAD">Agency Head</option>
+                  <option value="DISTRICT_CELL">Dist. Monitoring Cell</option>
+                  <option value="OPERATOR">Operator</option>
+                  <option value="COLLECTOR">Hon Dist Collector</option>
+                </select>
+              </div>
             </div>
-            <div class="mb-2"><label class="form-label">एजन्सी</label><input class="form-control" name="agency" required></div>
-            <div class="mb-3"><label class="form-label">वरिष्ठाचा ID</label><input class="form-control" name="reportsTo"></div>
+
+            <!-- 🔹 अपडेटेड: विभाग / एजन्सी ड्रॉपडाऊन -->
+            <div class="mb-2"><label class="form-label">विभाग / एजन्सी</label>
+              <select class="form-select" name="agency" required>
+                <option value="">निवडा</option>
+                <option value="जलसंपदा विभाग">जलसंपदा विभाग</option>
+                <option value="मृद व जलसंधारण विभाग">मृद व जलसंधारण विभाग</option>
+                <option value="लघु पाटबंधारे जि प">लघु पाटबंधारे जि प</option>
+                <option value="ग्रामिण पाणीपुरवठा">ग्रामिण पाणीपुरवठा</option>
+                <option value="महसुल विभाग">महसुल विभाग</option>
+                <option value="महावितरण">महावितरण</option>
+                <option value="पोलीस विभाग">पोलीस विभाग</option>
+                <option value="ग्राम विकास विभाग">ग्राम विकास विभाग</option>
+              </select>
+            </div>
+            
+            <div class="mb-3"><label class="form-label">वरिष्ठाचा ID (ऐच्छिक)</label><input class="form-control" name="reportsTo"></div>
             <button type="submit" class="btn btn-earth w-100">नोंदणी करा</button>
           </form>
         </div>
