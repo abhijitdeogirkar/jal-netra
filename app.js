@@ -47,7 +47,7 @@
     } catch (e) {} 
   }
 
-  const roleLabel = (r) => ({ INSPECTOR: "Team Member", TALUKA_MONITOR: "Taluka Monitoring Officer", AGENCY_HEAD: "Agency Head", DISTRICT_CELL: "Dist. Monitoring Cell", COLLECTOR: "Hon Dist Collector", TEAM_COORD: "Team Co-ordinator", OPERATOR: "Operator" }[r] || r);
+  const roleLabel = (r) => ({ INSPECTOR: "Team Member", TALUKA_MONITOR: "Taluka Monitoring Officer", AGENCY_HEAD: "Agency Head", DISTRICT_CELL: "Dist. Monitoring Cell", COLLECTOR: "Hon Dist Collector", TEAM_COORD: "Team Co-ordinator", OPERATOR: "Operator", SUPER_ADMIN: "Super Admin" }[r] || r);
    window.JN = { api, state, toast, busy, fmtMr, todayStr, STATUS_MR, MONTHS_MR, roleLabel, show, $, loadPublicSettings };
 
   // 🔹 सूचना फलक
