@@ -194,7 +194,7 @@
     let done = 0;
     const bad = state.waterBodies.filter((w) => w.locationStatus === "DISAPPROVED");
     const banner = bad.length ? `<div class="alert-earth" style="background:#fdecea;border:1px solid #c1292e;color:#8a1c1f;margin-bottom:10px;"><i class="bi bi-exclamation-triangle-fill"></i> <b>${bad.length} जलसाठ्याचे स्थळ अप्रूव्ह झालेले नाही.</b> कृपया पुन्हा भेट देऊन स्थळाचा फोटो व GPS सह नोंद करा — जेणेकरून स्थळ दुरुस्त होईल.</div>` : "";
-    list.innerHTML = banner + state.waterBodies.map((w) => {
+        const card = (w) => {
       const entries = w.todayList || []; if (entries.length) done++; const queued = pendingLocal[w.wbId];
       const dis = w.locationStatus === "DISAPPROVED";
       let badges = entries.map(t => `<span class="wb-badge ${t.status}" style="margin-right:4px;">${STATUS_MR[t.status]} (${t.time})</span>`).join("");
@@ -204,9 +204,28 @@
       const geo = dis
         ? `<span style="color:#c1292e;font-weight:600;"><i class="bi bi-exclamation-triangle"></i> स्थळ अप्रूव्ह झालेले नाही${w.locationNote ? " — " + w.locationNote : ""}</span>`
         : `<i class="bi bi-geo"></i> ${w.lat ? "नोंदवलेले स्थळ" : "GPS अद्याप नाही"}`;
-      return `<div class="wb-card ${entries.length ? "done-" + entries[entries.length-1].status : ""}"${dis ? ' style="border:1px solid #c1292e;"' : ""}><div class="wb-card-top"><div><div class="wb-name">${w.name}</div><div class="wb-meta">${w.project} · ${w.talukaMr}</div></div></div><div style="margin-top:8px;">${badges}</div><div class="wb-geo">${geo}</div><div class="wb-actions">${btn}</div></div>`;
-    }).join("");
-    $("todayDone").textContent = done; $("todayTotal").textContent = state.waterBodies.length;
+      return `<div class="wb-card ${entries.length ? "done-" + entries[entries.length-1].status : ""}"${dis ? ' style="border:1px solid #c1292e;"' : ""}><div class="wb-card-top"><div><div class="wb-name">${w.name}</div><div class="wb-meta">${w.project}  ${w.talukaMr}</div></div></div><div style="margin-top:8px;">${badges}</div><div class="wb-geo">${geo}</div><div class="wb-actions">${btn}</div></div>`;
+    };
+    const role = state.user.role, groups = [];
+    if (role === "COLLECTOR" || role === "DISTRICT_CELL" || role === "SUPER_ADMIN") {
+      const g = {};
+      state.waterBodies.forEach((w) => { const k = w.agency || "—"; (g[k] = g[k] || []).push(w); });
+      Object.keys(g).sort().forEach((k) => groups.push({ title: k, items: g[k] }));
+    } else if (role === "AGENCY_HEAD") {
+      const g = {}, noTm = [];
+      state.waterBodies.forEach((w) => { const tm = (w.officers || []).filter((o) => o.role === "TALUKA_MONITOR")[0]; if (tm) { const k = tm.name + " (" + tm.id + ")"; (g[k] = g[k] || []).push(w); } else noTm.push(w); });
+      const keys = Object.keys(g).sort();
+      if (keys.length) { keys.forEach((k) => groups.push({ title: k, items: g[k] })); if (noTm.length) groups.push({ title: "तालुका मॉनिटर मॅप नाही", items: noTm }); }
+    }
+    if (groups.length) {
+      list.innerHTML = banner + groups.map((gr, i) => `<div data-wbg="${i}" style="display:flex;justify-content:space-between;align-items:center;background:#0b4f6c;color:#fff;padding:10px 12px;border-radius:12px;margin:10px 0 6px;cursor:pointer;font-weight:600;"><span><i class="bi bi-diagram-3"></i> ${gr.title}</span><span style="font-size:13px;opacity:.9;">${gr.items.length} जलसाठे <i class="bi bi-chevron-down"></i></span></div><div id="wbg-body-${i}">${gr.items.map(card).join("")}</div>`).join("");
+      list.querySelectorAll("[data-wbg]").forEach((h) => h.addEventListener("click", () => { const b = document.getElementById("wbg-body-" + h.dataset.wbg); if (b) b.style.display = (b.style.display === "none") ? "" : "none"; }));
+    } else {
+      list.innerHTML = banner + state.waterBodies.map(card).join("");
+    }
+
+     
+     $("todayDone").textContent = done; $("todayTotal").textContent = state.waterBodies.length;
     list.querySelectorAll("button[data-wb]").forEach((b) => b.addEventListener("click", () => openEntry(b.dataset.wb)));
   }
 
