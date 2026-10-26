@@ -92,7 +92,8 @@
 
   function enterApp() {
     $("topbarUser").innerHTML = `<span style="color:#ffd54f;font-size:14.5px;">${state.user.name}</span><br><small style="font-size:11px;opacity:0.9">${state.user.id} · ${roleLabel(state.user.role)}</small>`;
-    var __role = state.user.role; var __vs = document.getElementById("btnViewSwitch"); if (__vs) __vs.style.display = "none"; if (__role === "INSPECTOR" || __role === "TEAM_COORD") { initField(); show("screenInspector"); } else if (__role === "TALUKA_MONITOR") { initMonitor(); show("screenOfficer"); wireViewSwitch(); } else { initMonitor(); show("screenOfficer"); }
+    var __role = state.user.role; var __vs = document.getElementById("btnViewSwitch"); if (__vs) __vs.style.display = "none"; if (__role === "INSPECTOR" || __role === "TEAM_COORD") { initField(); show("screenInspector"); } else if (__role === "TALUKA_MONITOR" || __role === "COLLECTOR" || __role === "DISTRICT_CELL" || __role === "SUPER_ADMIN" || __role === "AGENCY_HEAD") { initMonitor(); show("screenOfficer"); wireViewSwitch(); }
+ else { initMonitor(); show("screenOfficer"); }
   }
 
   function restoreSession() { const tk = store.get("jn_token"), us = store.get("jn_user"); if (tk && us) { try { state.token = tk; state.user = JSON.parse(us); return true; } catch (e) {} } return false; }
