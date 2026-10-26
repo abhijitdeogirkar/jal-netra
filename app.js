@@ -218,7 +218,8 @@
       if (keys.length) { keys.forEach((k) => groups.push({ title: k, items: g[k] })); if (noTm.length) groups.push({ title: "तालुका मॉनिटर मॅप नाही", items: noTm }); }
     }
     if (groups.length) {
-      list.innerHTML = banner + groups.map((gr, i) => `<div data-wbg="${i}" style="display:flex;justify-content:space-between;align-items:center;background:#0b4f6c;color:#fff;padding:10px 12px;border-radius:12px;margin:10px 0 6px;cursor:pointer;font-weight:600;"><span><i class="bi bi-diagram-3"></i> ${gr.title}</span><span style="font-size:13px;opacity:.9;">${gr.items.length} जलसाठे <i class="bi bi-chevron-down"></i></span></div><div id="wbg-body-${i}">${gr.items.map(card).join("")}</div>`).join("");
+      list.innerHTML = banner + groups.map((gr, i) => `<div data-wbg="${i}" style="display:flex;justify-content:space-between;align-items:center;background:#0b4f6c;color:#fff;padding:10px 12px;border-radius:12px;margin:10px 0 6px;cursor:pointer;font-weight:600;"><span><i class="bi bi-diagram-3"></i> ${gr.title}</span><span style="font-size:13px;opacity:.9;">${gr.items.length} जलसाठे <i class="bi bi-chevron-down"></i></span></div><div id="wbg-body-${i}" style="display:none;">
+${gr.items.map(card).join("")}</div>`).join("");
       list.querySelectorAll("[data-wbg]").forEach((h) => h.addEventListener("click", () => { const b = document.getElementById("wbg-body-" + h.dataset.wbg); if (b) b.style.display = (b.style.display === "none") ? "" : "none"; }));
     } else {
       list.innerHTML = banner + state.waterBodies.map(card).join("");
