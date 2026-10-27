@@ -64,7 +64,7 @@
     const el = $(containerId); if(!el) return;
     const list = (state.settings && state.settings.notices) || [];
     if (list.length) {
-      el.innerHTML = `<div class="chalkboard-wrap" style="margin-bottom:10px;"><div class="chalk-header"><span><i class="bi bi-megaphone-fill"></i> मा. जिल्हाधिकारी यांच्या सूचना</span><span>${list.length}</span></div><div class="chalk-body" style="font-family:'Kalam','Segoe Script','Bradley Hand',cursive;color:#ffffff;font-size:19px;line-height:1.65;">` +
+      el.innerHTML = `<div class="chalkboard-wrap" style="margin-bottom:10px;"><div class="chalk-header"><span><i class="bi bi-megaphone-fill"></i> मा. जिल्हाधिकारी यांच्या सूचना</span><span>${list.length}</span></div><div class="chalk-body" style="font-family:'Kalam','Segoe Script','Bradley Hand',cursive;color:#ffffff;font-size:19px;line-height:1.30;">` +
         list.map((n) => `<div style="padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.28);">${n.text ? `<div>${n.text}</div>` : ""}${n.pdf ? `<div style="margin-top:6px;"><a href="${n.pdf}" target="_blank" rel="noopener" style="color:#ffd54f;font-family:'Mukta',sans-serif;font-weight:600;font-size:13px;"><i class="bi bi-file-earmark-pdf"></i> ${n.pdfName || "PDF पहा"}</a></div>` : ""}<div style="font-family:'Mukta',sans-serif;font-size:11.5px;opacity:.8;margin-top:6px;letter-spacing:.2px;">${fmtNoticeOn(n.on)}${n.by ? " (" + n.by + ")" : ""}</div></div>`).join("") +
         `</div></div>`;
       return;
